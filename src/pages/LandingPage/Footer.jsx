@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Footer.module.css";
-import logo from "../../assets/logo.png";
-import social from "../../assets/socialIcons.png";
+import logo from "../../../public/images/logo.png";
+import social from "../../../public/images/socialIcons.png";
 
 const Footer = () => {
   return (
