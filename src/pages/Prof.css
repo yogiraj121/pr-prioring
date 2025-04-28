@@ -1,0 +1,141 @@
+.profile-container {
+  display: flex;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar-container {
+  width: 85px;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin-left: 85px;
+  overflow-y: auto;
+}
+
+.header {
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  color: #333;
+}
+
+.form-section {
+  padding: 20px;
+  max-width: 800px;
+}
+
+.tabs {
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 30px;
+}
+
+.active-tab {
+  display: inline-block;
+  padding: 12px 16px;
+  border-bottom: 2px solid #1a73e8;
+  color: #1a73e8;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.error-message {
+  color: #dc2626;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  color: #16a34a;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group.with-tooltip {
+  position: relative;
+}
+
+.input-container {
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-input:focus {
+  border-color: #1a73e8;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+.tooltip-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.tooltip-content {
+  position: absolute;
+  right: 30px;
+  top: 0;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 4px;
+  width: 200px;
+  font-size: 12px;
+  color: #666;
+  z-index: 1000;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 40px;
+}
+
+.save-button {
+  padding: 12px 24px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-button:hover {
+  background: #1558b1;
+}
+
+.save-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+} 

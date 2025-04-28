@@ -1,0 +1,159 @@
+.signup-container {
+  display: flex;
+  width: 100%;
+  margin: auto;
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.form-section {
+  width: 100%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-content {
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.logo {
+  color: #114a82;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 4%;
+  left: 5%;
+}
+
+.logo-icon {
+  margin-right: 10px;
+  width: 140px;
+  height: 50px;
+}
+
+.form-title {
+  font-size: 28px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.form-subtitle {
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+}
+
+.submit-button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #1557b0;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+}
+
+.bold-link {
+  color: #114a82;
+  text-decoration: none;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.bold-link:hover {
+  text-decoration: underline;
+}
+
+.terms {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.image-container {
+  flex: 1;
+  background-color: #f7f9fc;
+}
+
+.signup-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.debug-info {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .image-container {
+    display: none;
+  }
+} 
