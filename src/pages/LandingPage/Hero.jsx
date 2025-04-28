@@ -1,8 +1,4 @@
 import styles from "./Hero.module.css";
-import heroImg from "../../assets/heroImage.png";
-import heroCalender from "../../assets/heroCalender.png";
-import heroGraph from "../../assets/heroGraph.png";
-import heroComment from "../../assets/heroComment.png";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
@@ -31,10 +27,10 @@ const Hero = () => {
       </div>
 
       <div className={styles.heroImg}>
-        <img src={heroImg} alt="" className={styles.mainImg} />
+        <img src="/images/heroImage.png" alt="" className={styles.mainImg} />
         <div className={styles.leftBottom}>
           <img
-            src={heroCalender}
+            src="/images/heroCalender.png"
             alt=""
             style={{
               width: "250px",
@@ -46,7 +42,7 @@ const Hero = () => {
         </div>
         <div className={styles.rightBottom}>
           <img
-            src={heroGraph}
+            src="/images/heroGraph.png"
             alt=""
             style={{
               width: "212px",
@@ -58,7 +54,7 @@ const Hero = () => {
         </div>
         <div className={styles.rightTop}>
           <img
-            src={heroComment}
+            src="/images/heroComment.png"
             alt=""
             style={{
               width: "286px",
