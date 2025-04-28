@@ -1,11 +1,11 @@
 import styles from "./Companies.module.css";
-import adobe from "../../../public/images/companies/adobe.png";
-import elastic from "../../../public/images/companies/elastic.png";
+import adobe from "../../../public/images/adobe.png";
+import elastic from "../../../public/images/elastic.png";
 
-import airtable from "../../../public/images/companies/airtable.png";
+import airtable from "../../../public/images/airtable.png";
 
-import opendoor from "../../../public/images/companies/opendoor.png";
-import framer from "../../../public/images/companies/framer.png";
+import opendoor from "../../../public/images/opendoor.png";
+import framer from "../../../public/images/framer.png";
 
 const Companies = () => {
   return (
