@@ -1,7 +1,7 @@
 import styles from "./Hero.module.css";
-import HeroImg from "../../assets/heroImage.png";
+import heroImg from "../../assets/heroImage.png";
 import heroCalender from "../../assets/heroCalender.png";
-import heroGraph from "../../assets/herograph.png";
+import heroGraph from "../../assets/heroGraph.png";
 import heroComment from "../../assets/heroComment.png";
 import { Link } from "react-router-dom";
 
@@ -31,7 +31,7 @@ const Hero = () => {
       </div>
 
       <div className={styles.heroImg}>
-        <img src={HeroImg} alt="" className={styles.mainImg} />
+        <img src={heroImg} alt="" className={styles.mainImg} />
         <div className={styles.leftBottom}>
           <img
             src={heroCalender}
