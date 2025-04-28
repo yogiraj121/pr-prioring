@@ -3,8 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { authService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import "./Login.css";
-import employee from "../assets/employee.png";
-import logo from "../assets/logo.png";
+import employee from "../../public/images/employee.png";
+import logo from "../../public/images/logo.png";
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

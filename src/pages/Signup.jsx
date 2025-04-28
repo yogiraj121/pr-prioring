@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { authService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import "./Signup.css";
-import logo from "../assets/logo.png";
-import employee from "../assets/employee.png";
+import logo from "../../public/images/logo.png";
+import employee from "../../public/images/employee.png";
 const SignupComponent = () => {
   const [formData, setFormData] = useState({
     firstName: "",
