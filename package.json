@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "CI=false vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -14,7 +14,6 @@
     "axios": "^1.8.4",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.503.0",
-    "node": "^22.15.0",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.0.0",
