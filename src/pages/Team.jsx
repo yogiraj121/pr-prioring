@@ -18,8 +18,6 @@ const TeamManagement = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "+91",
-    password: "",
     role: "member",
   });
   const [error, setError] = useState("");
@@ -58,11 +56,20 @@ const TeamManagement = () => {
         }
       }
 
-      // Sort members with admins always on top
+      // Sort members with current user always on top, followed by admins
       filteredMembers.sort((a, b) => {
+        // Current user always first
+        if (a._id === user._id) return -1;
+        if (b._id === user._id) return 1;
+
+        // Then other admins
         if (a.role === "admin" && b.role !== "admin") return -1;
         if (a.role !== "admin" && b.role === "admin") return 1;
-        return 0;
+
+        // If both are admins or both are members, sort by name
+        return (a.firstName || a.name || "").localeCompare(
+          b.firstName || b.name || ""
+        );
       });
 
       setTeamMembers(filteredMembers);
@@ -110,8 +117,6 @@ const TeamManagement = () => {
       setFormData({
         name: member.firstName || member.name || "user",
         email: member.email,
-        phone: member.phone || "",
-        password: "", // Password field will be empty when editing
         role: member.role,
       });
     } else {
@@ -119,8 +124,6 @@ const TeamManagement = () => {
       setFormData({
         name: "",
         email: "",
-        phone: "",
-        password: "",
         role: "member",
       });
     }
@@ -149,18 +152,8 @@ const TeamManagement = () => {
 
   const handleSave = async () => {
     // Simple validation
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.password ||
-      !formData.phone
-    ) {
+    if (!formData.name || !formData.email) {
       setError("Please Fill all required Fields");
-      return;
-    }
-
-    if (!editingMember && !formData.password) {
-      setError("Password is required for new team members");
       return;
     }
 
@@ -171,14 +164,8 @@ const TeamManagement = () => {
         const updateData = {
           name: formData.name,
           email: formData.email,
-          phone: formData.phone,
           role: formData.role,
         };
-
-        // Only include password if it's set
-        if (formData.password) {
-          updateData.password = formData.password;
-        }
 
         console.log("Updating member with data:", updateData);
         updatedMember = await userService.updateMember(
@@ -194,13 +181,12 @@ const TeamManagement = () => {
           )
         );
       } else {
-        // Add new member
+        // Add new member with admin's password
         const newMemberData = {
-          name: formData.name || formData.firstName + " " + formData.lastName,
+          name: formData.name,
           email: formData.email,
-          phone: formData.phone,
-          password: formData.password,
           role: formData.role,
+          useAdminPassword: true, // Flag to tell backend to use admin's password
         };
         console.log("Creating new member with data:", newMemberData);
         const newMember = await userService.createMember(newMemberData);
@@ -219,8 +205,6 @@ const TeamManagement = () => {
       setFormData({
         name: "",
         email: "",
-        phone: "",
-        password: "",
         role: "member",
       });
 
@@ -430,38 +414,6 @@ const TeamManagement = () => {
                   onChange={handleInputChange}
                   className="formInput"
                   placeholder="Email address"
-                  required
-                />
-              </div>
-
-              <div className="formGroup">
-                <label className="formLabel">Phone</label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="formInput"
-                  placeholder="Phone number (optional)"
-                  required
-                />
-              </div>
-
-              <div className="formGroup">
-                <label className="formLabel">
-                  {editingMember
-                    ? "New Password (leave blank to keep current)"
-                    : "Password"}
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="formInput"
-                  placeholder={
-                    editingMember ? "New password (optional)" : "Password"
-                  }
                   required
                 />
               </div>

@@ -493,8 +493,6 @@ export default function ContactCenter() {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  
-
   // Add this function to generate avatar URL
   const getAvatarUrl = (userId) => {
     return `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`;
@@ -515,7 +513,10 @@ export default function ContactCenter() {
             <h3>Confirm Assignment</h3>
             <p>Are you sure you want to assign this chat?</p>
             <div className="confirmButtons">
-              <button className="cancelButton" onClick={() => setShowAssignConfirm(false)}>
+              <button
+                className="cancelButton"
+                onClick={() => setShowAssignConfirm(false)}
+              >
                 Cancel
               </button>
               <button className="confirmButton" onClick={confirmAssignment}>
@@ -549,28 +550,31 @@ export default function ContactCenter() {
           ) : error ? (
             <div className="errorMessage">{error}</div>
           ) : userRole === "member" && tickets.length === 0 ? (
-            <div className="noTicketsMessage">
-              No tickets assigned to you
-            </div>
+            <div className="noTicketsMessage">No tickets assigned to you</div>
           ) : (
             <div id="chat-list" className="chatListContent">
               {[...tickets]
                 .sort((a, b) => {
-                  if (ticketId) {
-                    if (a._id === ticketId) return -1;
-                    if (b._id === ticketId) return 1;
-                  }
-                  if (!a.assignedTo && b.assignedTo) return -1;
-                  if (a.assignedTo && !b.assignedTo) return 1;
+                  // Sort by creation date, newest first
                   return new Date(b.createdAt) - new Date(a.createdAt);
                 })
                 .map((ticket, index) => (
                   <div
                     key={ticket._id}
-                    className={`chatItem ${activeChat?._id === ticket._id ? 'activeChatItem' : ''}`}
+                    className={`chatItem ${
+                      activeChat?._id === ticket._id ? "activeChatItem" : ""
+                    }`}
                     style={{
-                      opacity: ticket.assignedTo && ticket.assignedTo !== userService.getCurrentUserId() ? 0.5 : 1,
-                      pointerEvents: ticket.assignedTo && ticket.assignedTo !== userService.getCurrentUserId() ? 'none' : 'auto'
+                      opacity:
+                        ticket.assignedTo &&
+                        ticket.assignedTo !== userService.getCurrentUserId()
+                          ? 0.5
+                          : 1,
+                      pointerEvents:
+                        ticket.assignedTo &&
+                        ticket.assignedTo !== userService.getCurrentUserId()
+                          ? "none"
+                          : "auto",
                     }}
                     onClick={() => handleChatSelect(ticket)}
                   >
@@ -592,11 +596,13 @@ export default function ContactCenter() {
                     <div className="chatInfo">
                       <div className="chatName">
                         Chat {index + 1}
-                        {ticket.assignedTo && ticket.assignedTo !== userService.getCurrentUserId() && (
-                          <span className="assignedBadge">
-                            Assigned Ticket . You cant access
-                          </span>
-                        )}
+                        {ticket.assignedTo &&
+                          ticket.assignedTo !==
+                            userService.getCurrentUserId() && (
+                            <span className="assignedBadge">
+                              Assigned Ticket . You cant access
+                            </span>
+                          )}
                       </div>
                       <div className="chatPreview">
                         {ticket.firstMessage?.substring(0, 30) || "No message"}
@@ -618,10 +624,11 @@ export default function ContactCenter() {
       {/*----------- Main Chat Area ------------*/}
       <div className="mainArea">
         {userRole === "member" && tickets.length === 0 ? (
-          <div className="noTicketsMessage">
-            No tickets assigned to you
-          </div>
-        ) : currentTicket && userRole === "admin" && currentTicket.assignedTo && currentTicket.assignedTo !== userService.getCurrentUserId() ? (
+          <div className="noTicketsMessage">No tickets assigned to you</div>
+        ) : currentTicket &&
+          userRole === "admin" &&
+          currentTicket.assignedTo &&
+          currentTicket.assignedTo !== userService.getCurrentUserId() ? (
           <div className="accessDeniedMessage">
             You do not have access to this chat
           </div>
@@ -653,9 +660,21 @@ export default function ContactCenter() {
                     const isUserMessage = message.sender === "user";
                     return (
                       <div key={index} className="messageContainer">
-                        <div className={`messageBubble ${isUserMessage ? 'userMessageBubble' : 'agentMessageBubble'}`}>
+                        <div
+                          className={`messageBubble ${
+                            isUserMessage
+                              ? "userMessageBubble"
+                              : "agentMessageBubble"
+                          }`}
+                        >
                           {message.message}
-                          <div className={`messageTime ${isUserMessage ? 'userMessageTime' : 'agentMessageTime'}`}>
+                          <div
+                            className={`messageTime ${
+                              isUserMessage
+                                ? "userMessageTime"
+                                : "agentMessageTime"
+                            }`}
+                          >
                             {formatTime(message.timestamp)}
                           </div>
                         </div>
@@ -696,11 +715,11 @@ export default function ContactCenter() {
 
       {/*----------- Details Sidebar ------------*/}
       {userRole === "member" && tickets.length === 0 ? (
-        <div className="noTicketsMessage">
-          No tickets assigned to you
-        </div>
+        <div className="noTicketsMessage">No tickets assigned to you</div>
       ) : (
-        currentTicket && (!currentTicket.assignedTo || currentTicket.assignedTo === userService.getCurrentUserId()) && (
+        currentTicket &&
+        (!currentTicket.assignedTo ||
+          currentTicket.assignedTo === userService.getCurrentUserId()) && (
           <div className="detailsSidebar">
             <div className="detailsHeader">
               <h2 className="detailsTitle">Details</h2>
@@ -747,9 +766,7 @@ export default function ContactCenter() {
                 ))}
               </select>
               {loadingTeamMembers && (
-                <div className="teamMemberLoading">
-                  Loading team members...
-                </div>
+                <div className="teamMemberLoading">Loading team members...</div>
               )}
             </div>
 

@@ -12,8 +12,8 @@ export default function SettingsProfileForm() {
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
     email: user?.email || "",
-    password: "************",
-    confirmPassword: "************",
+    newPassword: "",
+    confirmPassword: "",
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,8 +40,8 @@ export default function SettingsProfileForm() {
               (userData.name && userData.name.split(" ").slice(1).join(" ")) ||
               "",
             email: userData.email || user?.email || "",
-            password: "************",
-            confirmPassword: "************",
+            newPassword: "",
+            confirmPassword: "",
           });
         }
       } catch (err) {
@@ -78,14 +78,13 @@ export default function SettingsProfileForm() {
         email: formData.email,
       };
 
-      // Only include password if it's not the placeholder
-      if (formData.password !== "************") {
-        if (formData.password !== formData.confirmPassword) {
+      // Only update password if both fields are filled
+      if (formData.newPassword && formData.confirmPassword) {
+        if (formData.newPassword !== formData.confirmPassword) {
           throw new Error("Passwords do not match");
         }
         await authService.updatePassword({
-          currentPassword: formData.password,
-          newPassword: formData.password,
+          newPassword: formData.newPassword,
         });
       }
 
@@ -121,15 +120,20 @@ export default function SettingsProfileForm() {
       // Reset password fields
       setFormData((prev) => ({
         ...prev,
-        password: "************",
-        confirmPassword: "************",
+        newPassword: "",
+        confirmPassword: "",
       }));
 
-      // Logout and redirect to login after a short delay
+      // Show different message if password was changed
+      if (formData.newPassword && formData.confirmPassword) {
+        setSuccess(
+          "Password updated successfully. All team members' passwords have been updated to match."
+        );
+      }
+
       setTimeout(() => {
         logout();
-        navigate("/login");
-      }, 1200);
+      }, 1000);
     } catch (err) {
       console.error("Error in handleSubmit:", err);
       setError(err.message || "Failed to update profile");
@@ -201,20 +205,21 @@ export default function SettingsProfileForm() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Password</label>
+              <label className="form-label">New Password</label>
               <div className="input-container">
                 <input
                   type="password"
-                  name="password"
-                  value={formData.password}
+                  name="newPassword"
+                  value={formData.newPassword}
                   onChange={handleChange}
                   className="form-input"
+                  placeholder="Enter new password"
                 />
               </div>
             </div>
 
             <div className="form-group with-tooltip">
-              <label className="form-label">Confirm Password</label>
+              <label className="form-label">Confirm New Password</label>
               <div className="input-container">
                 <input
                   type="password"
@@ -222,6 +227,7 @@ export default function SettingsProfileForm() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="form-input"
+                  placeholder="Confirm new password"
                 />
                 <div
                   className="tooltip-icon"
@@ -234,7 +240,7 @@ export default function SettingsProfileForm() {
 
                   {tooltipVisible && (
                     <div className="tooltip-content">
-                      User will logged out immediately
+                      User will be logged out immediately after password change
                     </div>
                   )}
                 </div>
