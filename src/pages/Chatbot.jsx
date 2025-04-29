@@ -4,6 +4,7 @@ import { MessageSquare, Send } from "lucide-react";
 import { ticketService } from "../services/api";
 import styles from "./Chatbot.module.css";
 import { toast } from "react-hot-toast";
+import api from "../services/api";
 
 export default function Chatbot() {
   const { settings } = useChatCustomization();
@@ -245,25 +246,16 @@ export default function Chatbot() {
       setLoading(true);
       setError("");
 
-      const updateResponse = await fetch(
-        `http://localhost:5000/api/tickets/${ticketId}/update`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userInfo: {
-              name: formData.name.trim(),
-              email: formData.email.trim(),
-              phone: formData.phone?.trim() || "",
-            },
-          }),
-        }
-      );
+      const response = await api.put(`/tickets/${ticketId}/update`, {
+        userInfo: {
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone?.trim() || "",
+        },
+      });
 
-      if (!updateResponse.ok) {
-        const errorData = await updateResponse.json();
+      if (!response.ok) {
+        const errorData = await response.json();
         throw new Error(errorData.error || "Failed to update ticket");
       }
 

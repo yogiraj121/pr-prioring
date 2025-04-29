@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://ticket-system-yogiraj.onrender.com/api";
+const API_URL = "https://server-793q.onrender.com/api";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -233,10 +233,7 @@ export const analyticsService = {
 
 export const saveChatSettings = async (settings) => {
   try {
-    const response = await api.post(
-      "http://localhost:5000/api/chatbot/settings",
-      settings
-    );
+    const response = await api.post("/chatbot/settings", settings);
     return response.data;
   } catch (error) {
     console.error("Error saving chat settings:", error);
@@ -246,37 +243,30 @@ export const saveChatSettings = async (settings) => {
 
 export const getChatSettings = async () => {
   try {
-    const response = await api.get(
-      "http://localhost:5000/api/chatbot/settings"
-    );
+    const response = await api.get("/chatbot/settings");
     return response.data;
   } catch (error) {
-    console.error("Error fetching chat settings:", error);
+    console.error("Error getting chat settings:", error);
     throw error;
   }
 };
 
 export const saveChatMessage = async (message) => {
   try {
-    const response = await api.post(
-      "http://localhost:5000/api/chatbot/messages",
-      message
-    );
+    const response = await api.post("/chatbot/messages", message);
     return response.data;
   } catch (error) {
-    console.error("Error saving message:", error);
+    console.error("Error saving chat message:", error);
     throw error;
   }
 };
 
 export const getChatMessages = async () => {
   try {
-    const response = await api.get(
-      "http://localhost:5000/api/chatbot/messages"
-    );
+    const response = await api.get("/chatbot/messages");
     return response.data;
   } catch (error) {
-    console.error("Error fetching messages:", error);
+    console.error("Error getting chat messages:", error);
     throw error;
   }
 };
