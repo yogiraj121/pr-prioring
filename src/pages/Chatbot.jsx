@@ -436,8 +436,10 @@ export default function Chatbot() {
                     <input
                       type="text"
                       value={formData.name}
+                      
                       onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
+                        setFormData({ ...formData, name: e.target.value }
+                        )
                       }
                       placeholder={settings?.introForm?.name || "Your name"}
                       required
@@ -462,6 +464,7 @@ export default function Chatbot() {
                     <input
                       type="tel"
                       value={formData.phone}
+                      required
                       onChange={(e) =>
                         setFormData({ ...formData, phone: e.target.value })
                       }

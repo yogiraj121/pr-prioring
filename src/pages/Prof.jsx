@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useAuth } from "../context/AuthContext";
 import { authService } from "../services/api";
+import { useNavigate } from "react-router-dom";
 import "./Prof.css";
 
 export default function SettingsProfileForm() {
-  const { user, updateUserContext } = useAuth();
+  const { user, updateUserContext, logout } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
@@ -122,6 +124,12 @@ export default function SettingsProfileForm() {
         password: "************",
         confirmPassword: "************",
       }));
+
+      // Logout and redirect to login after a short delay
+      setTimeout(() => {
+        logout();
+        navigate("/login");
+      }, 1200);
     } catch (err) {
       console.error("Error in handleSubmit:", err);
       setError(err.message || "Failed to update profile");

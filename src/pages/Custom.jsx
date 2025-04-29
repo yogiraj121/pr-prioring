@@ -251,9 +251,8 @@ function ChatBotCustomization() {
     },
     formField: {
       marginBottom: "15px",
-      
     },
-    
+
     formLabel: {
       display: "block",
       fontSize: "14px",
@@ -440,7 +439,14 @@ function ChatBotCustomization() {
             <div style={styles.chatBody}>
               {/* Intro Form */}
               <div style={styles.introFormContainer}>
-                <div style={{ fontWeight: "bold", marginBottom: "10px", color: "#333" ,fontSize: "16px"}}>
+                <div
+                  style={{
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                    color: "#333",
+                    fontSize: "16px",
+                  }}
+                >
                   Introduction Yourself
                 </div>
                 <div style={{ marginBottom: "10px" }}>

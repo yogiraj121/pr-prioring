@@ -239,9 +239,11 @@ export default function TicketDashboard() {
                         {ticket.userInfo?.name || "Anonymous"}
                       </div>
                       <div className="user-contact">
-                        {ticket.userInfo?.phone &&
-                          `${ticket.userInfo.phone} • `}
-                        {ticket.userInfo?.email || "No email"}
+                        <div>
+                            {ticket.userInfo?.phone &&
+                            `${ticket.userInfo.phone} • `}
+                        </div>
+                        <div>{ticket.userInfo?.email || "No email"}</div>
                       </div>
                     </div>
                   </div>

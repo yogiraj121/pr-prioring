@@ -417,6 +417,7 @@ const TeamManagement = () => {
                   onChange={handleInputChange}
                   className="formInput"
                   placeholder="Full Name"
+                  required
                 />
               </div>
 
@@ -429,6 +430,7 @@ const TeamManagement = () => {
                   onChange={handleInputChange}
                   className="formInput"
                   placeholder="Email address"
+                  required
                 />
               </div>
 
@@ -441,6 +443,7 @@ const TeamManagement = () => {
                   onChange={handleInputChange}
                   className="formInput"
                   placeholder="Phone number (optional)"
+                  required
                 />
               </div>
 
@@ -459,6 +462,7 @@ const TeamManagement = () => {
                   placeholder={
                     editingMember ? "New password (optional)" : "Password"
                   }
+                  required
                 />
               </div>
 

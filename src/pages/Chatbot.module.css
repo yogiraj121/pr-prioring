@@ -94,7 +94,8 @@
   background: #f8f9fa;
   border-radius: 8px;
   margin: 10px 0;
-  
+  width: 70%;
+  height: 65%;
 }
 
 .chat-form-container h3 {
@@ -115,7 +116,7 @@
 }
 
 .form-group input {
-  width: 100%;
+  width: 80%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;

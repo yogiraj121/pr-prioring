@@ -15,6 +15,7 @@ const SignupComponent = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -185,10 +186,10 @@ const SignupComponent = () => {
             </div>
             <div className="form-group">
               <span>
-                <input type="checkbox" />
+                <input type="checkbox" checked={isChecked} onChange={() => setIsChecked(!isChecked)} required/>
 
-                <label className="form-label-checkbox">
-                  I agree to the terms and conditions
+                <label className="form-label-checkbox" >
+                  By creating an account, you agree to the terms and conditions
                 </label>
               </span>
             </div>

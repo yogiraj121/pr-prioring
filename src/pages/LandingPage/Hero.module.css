@@ -33,6 +33,7 @@
     color: white;
     font-weight: 500;
     border: none;
+    cursor: pointer;
 }
 .button2{
     width: 166px;
@@ -61,7 +62,7 @@
 .leftBottom{
     position: absolute;
     top: 80%;
-    right: 30%;
+    right: 70%;
     background: none;
       
 }
@@ -75,7 +76,7 @@
 }
 .rightTop{
     position: absolute;
-    top: 10%;
+    top: 2%;
     right: -10%;
     background: none;
    

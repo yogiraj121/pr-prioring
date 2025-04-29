@@ -73,10 +73,8 @@ const LoginComponent = () => {
           
         </div>
 
-        <h1 className="form-title">Sign in</h1>
-        <p className="form-subtitle">
-          Sign in as an admin or team member to access the ticket system
-        </p>
+        <h1 className="form-title">Sign in to your Plexify</h1>
+        
 
         {successMessage && (
           <div className="success-message">{successMessage}</div>
@@ -122,13 +120,11 @@ const LoginComponent = () => {
         <div className="signup-link">
           Don't have an account?{" "}
           <button onClick={() => navigate("/signup")} className="bold-link">
-            Sign up as admin
+            Sign up 
           </button>
         </div>
 
-        <div className="terms">
-          This is an internal ticketing system for authorized users only.
-        </div>
+        
       
       </div></div>
 
