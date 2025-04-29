@@ -51,11 +51,33 @@ export default function TicketDashboard() {
 
   // Polling mechanism
   useEffect(() => {
-    const pollInterval = setInterval(() => {
-      fetchTickets(false); // Don't show loading state during polling
+    let isMounted = true;
+    const pollInterval = setInterval(async () => {
+      try {
+        if (isMounted) {
+          const response = await ticketService.getAllTickets(activeTab);
+          if (response?.data?.tickets) {
+            const sortedTickets = response.data.tickets.sort(
+              (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+            );
+            setTickets(sortedTickets);
+            setError("");
+          }
+        }
+      } catch (error) {
+        console.error("Error polling tickets:", error);
+        if (isMounted) {
+          setError(
+            error.message || "Failed to fetch tickets. Please try again."
+          );
+        }
+      }
     }, 5000); // Poll every 5 seconds
 
-    return () => clearInterval(pollInterval); // Cleanup on unmount
+    return () => {
+      isMounted = false;
+      clearInterval(pollInterval);
+    };
   }, [activeTab]);
 
   const handleTabChange = (tab) => {
@@ -198,7 +220,7 @@ export default function TicketDashboard() {
                       })}
                     </div>
                     <div className="ticket-status">
-                       {getRelativeTime(ticket.createdAt)}
+                      {getRelativeTime(ticket.createdAt)}
                     </div>
                   </div>
                 </div>

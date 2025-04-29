@@ -231,4 +231,54 @@ export const analyticsService = {
   getDetailedAnalytics: () => api.get("/analytics/detailed"),
 };
 
+export const saveChatSettings = async (settings) => {
+  try {
+    const response = await api.post(
+      "http://localhost:5000/api/chatbot/settings",
+      settings
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error saving chat settings:", error);
+    throw error;
+  }
+};
+
+export const getChatSettings = async () => {
+  try {
+    const response = await api.get(
+      "http://localhost:5000/api/chatbot/settings"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching chat settings:", error);
+    throw error;
+  }
+};
+
+export const saveChatMessage = async (message) => {
+  try {
+    const response = await api.post(
+      "http://localhost:5000/api/chatbot/messages",
+      message
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error saving message:", error);
+    throw error;
+  }
+};
+
+export const getChatMessages = async () => {
+  try {
+    const response = await api.get(
+      "http://localhost:5000/api/chatbot/messages"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    throw error;
+  }
+};
+
 export default api;

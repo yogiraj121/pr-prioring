@@ -6,9 +6,7 @@
 
 .sidebar {
   width: 85px;
-  background-color: #1a2b6d;
-  position: fixed;
-  height: 100vh;
+  background-color: #fff;
 }
 
 .sidebarItem {

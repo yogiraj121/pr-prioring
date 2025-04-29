@@ -16,6 +16,7 @@ import {
 import Sidebar from "./Sidebar";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import { ticketService, userService } from "../services/api";
+import "./ChatCenter.css";
 
 export default function ContactCenter() {
   const { ticketId } = useParams();
@@ -47,6 +48,9 @@ export default function ContactCenter() {
   const [teamMembers, setTeamMembers] = useState([]);
   const [loadingTeamMembers, setLoadingTeamMembers] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [showAssignConfirm, setShowAssignConfirm] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState(null);
+  const [showAccessLostPopup, setShowAccessLostPopup] = useState(false);
 
   // Save tickets to localStorage
   useEffect(() => {
@@ -428,10 +432,6 @@ export default function ContactCenter() {
     }
   };
 
-  const [showAssignConfirm, setShowAssignConfirm] = useState(false);
-  const [selectedMemberId, setSelectedMemberId] = useState(null);
-  const [showAccessLostPopup, setShowAccessLostPopup] = useState(false);
-
   const handleAssignTicket = async (memberId) => {
     if (!currentTicket || !memberId) return;
     setSelectedMemberId(memberId);
@@ -493,382 +493,7 @@ export default function ContactCenter() {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  const styles = {
-    container: {
-      display: "flex",
-      height: "100vh",
-      width: "100%",
-      backgroundColor: "#f8f9fa",
-      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
-      position: "relative",
-      overflow: "hidden",
-    },
-
-    sidebar: {
-      width: "85px",
-      backgroundColor: "#1a2b6d",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      padding: "20px 0",
-      position: "fixed",
-      height: "100vh",
-      zIndex: 10,
-    },
-
-    chatsSidebar: {
-      width: "300px",
-      backgroundColor: "#ffffff",
-      borderRight: "1px solid #e9ecef",
-      marginLeft: "85px",
-      height: "100vh",
-      position: "fixed",
-      overflowY: "auto",
-    },
-
-    chatHeader: {
-      padding: "24px",
-      borderBottom: "1px solid #e9ecef",
-    },
-
-    headerTitle: {
-      fontSize: "24px",
-      fontWeight: "600",
-      color: "#1a2b6d",
-      margin: 0,
-    },
-
-    chatsSection: {
-      padding: "16px",
-    },
-
-    chatsLabel: {
-      fontSize: "14px",
-      fontWeight: "500",
-      color: "#6c757d",
-      marginBottom: "12px",
-    },
-
-    chatItem: {
-      display: "flex",
-      alignItems: "center",
-      padding: "12px 16px",
-      cursor: "pointer",
-      borderBottom: "1px solid #E5E7EB",
-      transition: "background-color 0.2s",
-      opacity: (ticket) => {
-        if (
-          ticket.assignedTo &&
-          ticket.assignedTo !== userService.getCurrentUserId()
-        )
-          return 0.5;
-        return 1;
-      },
-      pointerEvents: (ticket) => {
-        if (
-          ticket.assignedTo &&
-          ticket.assignedTo !== userService.getCurrentUserId()
-        )
-          return "none";
-        return "auto";
-      },
-      "&:hover": {
-        backgroundColor: "#F3F4F6",
-      },
-    },
-
-    activeChatItem: {
-      backgroundColor: "#F3F4F6",
-    },
-
-    avatar: {
-      width: "40px",
-      height: "40px",
-      borderRadius: "50%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: "12px",
-      overflow: "hidden",
-      backgroundColor: "#F3F4F6",
-    },
-    avatarImage: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-    },
-    avatarFallback: {
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: "16px",
-      fontWeight: "500",
-      color: "#6B7280",
-      backgroundColor: "#F3F4F6",
-    },
-
-    chatInfo: {
-      flex: 1,
-      minWidth: 0,
-    },
-
-    chatName: {
-      fontSize: "14px",
-      fontWeight: "500",
-      color: "#111827",
-      marginBottom: "4px",
-      display: "flex",
-      alignItems: "center",
-    },
-
-    chatPreview: {
-      fontSize: "12px",
-      color: "#6B7280",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-    },
-
-    mainArea: {
-      marginLeft: "385px",
-      width: "52%",
-      display: "flex",
-      flexDirection: "column",
-      backgroundColor: "#ffffff",
-      height: "100vh",
-      position: "relative",
-    },
-
-    mainHeader: {
-      padding: "24px",
-      borderBottom: "1px solid #e9ecef",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      backgroundColor: "#ffffff",
-    },
-
-    ticketTitle: {
-      fontSize: "16px",
-      fontWeight: "500",
-      color: "#1a2b6d",
-    },
-
-    chatContent: {
-      flex: 1,
-      padding: "24px",
-      overflowY: "auto",
-      backgroundColor: "#ffffff",
-      display: "flex",
-      flexDirection: "column",
-      gap: "16px",
-      height: "calc(100vh - 200px)",
-      scrollBehavior: "smooth",
-    },
-
-    messageContainer: {
-      display: "flex",
-      alignItems: "flex-start",
-      marginBottom: "16px",
-      position: "relative",
-    },
-
-    messageBubble: {
-      maxWidth: "70%",
-      padding: "12px 16px",
-      borderRadius: "12px",
-      fontSize: "14px",
-      lineHeight: "1.5",
-      position: "relative",
-    },
-
-    userMessageBubble: {
-      backgroundColor: "#4F46E5",
-      color: "#FFFFFF",
-      marginLeft: "auto",
-      borderBottomRightRadius: "4px",
-    },
-
-    agentMessageBubble: {
-      backgroundColor: "#F3F4F6",
-      color: "#111827",
-      borderBottomLeftRadius: "4px",
-    },
-
-    messageTime: {
-      fontSize: "10px",
-      marginTop: "4px",
-      opacity: 0.8,
-    },
-
-    userMessageTime: {
-      color: "#E5E7EB",
-      textAlign: "right",
-    },
-
-    agentMessageTime: {
-      color: "#6B7280",
-    },
-
-    inputContainer: {
-      padding: "16px 24px",
-      borderTop: "1px solid #e9ecef",
-      backgroundColor: "#ffffff",
-    },
-
-    inputWrapper: {
-      display: "flex",
-      alignItems: "center",
-      backgroundColor: "#f8f9fa",
-      borderRadius: "8px",
-      padding: "8px 16px",
-      border: "1px solid #e9ecef",
-    },
-
-    input: {
-      flex: 1,
-      border: "none",
-      outline: "none",
-      backgroundColor: "transparent",
-      fontSize: "14px",
-      color: "#212529",
-      padding: "8px 0",
-    },
-
-    sendButton: {
-      backgroundColor: "#1a2b6d",
-      color: "#ffffff",
-      border: "none",
-      borderRadius: "6px",
-      padding: "8px 16px",
-      cursor: "pointer",
-      fontSize: "14px",
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-    },
-
-    detailsSidebar: {
-      width: "300px",
-      backgroundColor: "#ffffff",
-      borderLeft: "1px solid #e9ecef",
-      height: "100vh",
-      position: "fixed",
-      right: 0,
-      top: 0,
-      overflowY: "auto",
-      padding: "24px",
-    },
-
-    detailsHeader: {
-      marginBottom: "24px",
-    },
-
-    detailsTitle: {
-      fontSize: "16px",
-      fontWeight: "500",
-      color: "#1a2b6d",
-      marginBottom: "16px",
-    },
-
-    detailsSection: {
-      marginBottom: "24px",
-    },
-
-    detailItem: {
-      display: "flex",
-      alignItems: "center",
-      padding: "12px",
-      backgroundColor: "#f8f9fa",
-      borderRadius: "8px",
-      marginBottom: "8px",
-    },
-
-    detailIcon: {
-      color: "#6c757d",
-      marginRight: "12px",
-    },
-
-    detailText: {
-      fontSize: "14px",
-      color: "#212529",
-    },
-
-    teammateSection: {
-      marginTop: "24px",
-    },
-
-    statusDropdown: {
-      width: "100%",
-      padding: "12px",
-      backgroundColor: "#ffffff",
-      border: "1px solid #e9ecef",
-      borderRadius: "8px",
-      fontSize: "14px",
-      color: "#212529",
-      cursor: "pointer",
-      marginTop: "8px",
-      outline: "none",
-    },
-
-    chatList: {
-      width: "300px",
-      backgroundColor: "#ffffff",
-      borderRight: "1px solid #e9ecef",
-      marginLeft: "85px",
-      height: "100vh",
-      position: "fixed",
-      overflowY: "auto",
-    },
-
-    chatListHeader: {
-      padding: "24px",
-      borderBottom: "1px solid #e9ecef",
-    },
-
-    chatListContent: {
-      padding: "16px",
-    },
-
-    errorMessage: {
-      padding: "16px",
-      color: "#dc3545",
-    },
-
-    messageAvatar: {
-      width: "32px",
-      height: "32px",
-      borderRadius: "50%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: "8px",
-      fontSize: "14px",
-      fontWeight: "500",
-      color: "#FFFFFF",
-      backgroundColor: (initial) => {
-        const colors = [
-          "#4F46E5",
-          "#10B981",
-          "#F59E0B",
-          "#EF4444",
-          "#8B5CF6",
-          "#EC4899",
-          "#06B6D4",
-          "#84CC16",
-        ];
-        const charCode = (initial || "?").toUpperCase().charCodeAt(0);
-        return colors[charCode % colors.length];
-      },
-    },
-
-    teamMemberLoading: {
-      marginTop: "8px",
-      color: "#6b7280",
-    },
-  };
+  
 
   // Add this function to generate avatar URL
   const getAvatarUrl = (userId) => {
@@ -882,63 +507,18 @@ export default function ContactCenter() {
   );
 
   return (
-    <div style={styles.container}>
+    <div className="container">
       {/* Assignment Confirmation Popup */}
       {showAssignConfirm && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: "20px",
-              borderRadius: "8px",
-              maxWidth: "400px",
-              textAlign: "center",
-            }}
-          >
+        <div className="confirmPopup">
+          <div className="confirmContent">
             <h3>Confirm Assignment</h3>
             <p>Are you sure you want to assign this chat?</p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "10px",
-                marginTop: "20px",
-              }}
-            >
-              <button
-                onClick={() => setShowAssignConfirm(false)}
-                style={{
-                  padding: "8px 16px",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  backgroundColor: "#f5f5f5",
-                }}
-              >
+            <div className="confirmButtons">
+              <button className="cancelButton" onClick={() => setShowAssignConfirm(false)}>
                 Cancel
               </button>
-              <button
-                onClick={confirmAssignment}
-                style={{
-                  padding: "8px 16px",
-                  border: "none",
-                  borderRadius: "4px",
-                  backgroundColor: "#1a2b6d",
-                  color: "white",
-                }}
-              >
+              <button className="confirmButton" onClick={confirmAssignment}>
                 Confirm
               </button>
             </div>
@@ -948,115 +528,77 @@ export default function ContactCenter() {
 
       {/* Access Lost Popup */}
       {showAccessLostPopup && (
-        <div
-          style={{
-            position: "fixed",
-            top: "20px",
-            right: "20px",
-            backgroundColor: "#f8d7da",
-            color: "#721c24",
-            padding: "12px 20px",
-            borderRadius: "4px",
-            zIndex: 1000,
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          }}
-        >
-          <p style={{ margin: 0 }}>You no longer have access to this chat</p>
+        <div className="accessLostPopup">
+          <p>You no longer have access to this chat</p>
         </div>
       )}
+
       {/* Left Sidebar */}
       <Sidebar />
 
-      {/* Chats Sidebar */}
-      <div style={styles.chatsSidebar}>
-        <div style={styles.chatHeader}>
-          <h1 style={styles.headerTitle}>Contact Center</h1>
+      {/*----------- Chats Sidebar ------------*/}
+      <div className="chatsSidebar">
+        <div className="chatHeader">
+          <h1 className="headerTitle">Contact Center</h1>
         </div>
 
-        <div style={styles.chatsSection}>
-          <div style={styles.chatsLabel}>Chats</div>
+        <div className="chatsSection">
+          <div className="chatsLabel">Chats</div>
           {loading ? (
             renderLoadingSkeleton()
           ) : error ? (
-            <div style={styles.errorMessage}>{error}</div>
+            <div className="errorMessage">{error}</div>
           ) : userRole === "member" && tickets.length === 0 ? (
-            <div
-              style={{ padding: "24px", textAlign: "center", color: "#6c757d" }}
-            >
+            <div className="noTicketsMessage">
               No tickets assigned to you
             </div>
           ) : (
-            <div id="chat-list" style={styles.chatListContent}>
+            <div id="chat-list" className="chatListContent">
               {[...tickets]
                 .sort((a, b) => {
-                  // If ticketId is provided (from dashboard), show that ticket first
                   if (ticketId) {
                     if (a._id === ticketId) return -1;
                     if (b._id === ticketId) return 1;
                   }
-                  // Then sort unassigned tickets to the top
                   if (!a.assignedTo && b.assignedTo) return -1;
                   if (a.assignedTo && !b.assignedTo) return 1;
-                  // For tickets with same assignment status, sort by creation date
                   return new Date(b.createdAt) - new Date(a.createdAt);
                 })
                 .map((ticket, index) => (
                   <div
                     key={ticket._id}
+                    className={`chatItem ${activeChat?._id === ticket._id ? 'activeChatItem' : ''}`}
                     style={{
-                      ...styles.chatItem,
-                      ...(activeChat?._id === ticket._id
-                        ? styles.activeChatItem
-                        : {}),
-                      opacity:
-                        ticket.assignedTo &&
-                        ticket.assignedTo !== userService.getCurrentUserId()
-                          ? 0.5
-                          : 1,
-                      pointerEvents:
-                        ticket.assignedTo &&
-                        ticket.assignedTo !== userService.getCurrentUserId()
-                          ? "none"
-                          : "auto",
+                      opacity: ticket.assignedTo && ticket.assignedTo !== userService.getCurrentUserId() ? 0.5 : 1,
+                      pointerEvents: ticket.assignedTo && ticket.assignedTo !== userService.getCurrentUserId() ? 'none' : 'auto'
                     }}
                     onClick={() => handleChatSelect(ticket)}
                   >
-                    <div style={styles.avatar}>
+                    <div className="avatar">
                       {ticket.userInfo?.profileImage ? (
                         <img
                           src={ticket.userInfo.profileImage}
                           alt={`User ${index + 1}`}
-                          style={styles.avatarImage}
+                          className="avatarImage"
                         />
                       ) : (
                         <img
                           src={getAvatarUrl(ticket.userInfo?._id || ticket._id)}
                           alt={`User ${index + 1}`}
-                          style={styles.avatarImage}
+                          className="avatarImage"
                         />
                       )}
                     </div>
-                    <div style={styles.chatInfo}>
-                      <div style={styles.chatName}>
+                    <div className="chatInfo">
+                      <div className="chatName">
                         Chat {index + 1}
-                        {ticket.assignedTo &&
-                          ticket.assignedTo !==
-                            userService.getCurrentUserId() && (
-                            <span
-                              style={{
-                                marginLeft: "8px",
-                                color: "#6B7280",
-                                fontSize: "12px",
-                                padding: "2px 6px",
-                                backgroundColor: "#F3F4F6",
-                                borderRadius: "4px",
-                              }}
-                            >
-                              Assigned Ticket . You cant access
-                            </span>
-                          )}
+                        {ticket.assignedTo && ticket.assignedTo !== userService.getCurrentUserId() && (
+                          <span className="assignedBadge">
+                            Assigned Ticket . You cant access
+                          </span>
+                        )}
                       </div>
-                      <div style={styles.chatPreview}>
+                      <div className="chatPreview">
                         {ticket.firstMessage?.substring(0, 30) || "No message"}
                         {ticket.firstMessage?.length > 30 ? "..." : ""}
                       </div>
@@ -1064,7 +606,7 @@ export default function ContactCenter() {
                   </div>
                 ))}
               {loadingMore && (
-                <div style={{ padding: "16px" }}>
+                <div className="loadingOverlay">
                   <LoadingSkeleton type="card" count={1} height="80px" />
                 </div>
               )}
@@ -1073,42 +615,34 @@ export default function ContactCenter() {
         </div>
       </div>
 
-      {/* Main Chat Area */}
-      <div style={styles.mainArea}>
+      {/*----------- Main Chat Area ------------*/}
+      <div className="mainArea">
         {userRole === "member" && tickets.length === 0 ? (
-          <div
-            style={{ padding: "24px", textAlign: "center", color: "#6c757d" }}
-          >
+          <div className="noTicketsMessage">
             No tickets assigned to you
           </div>
-        ) : currentTicket &&
-          userRole === "admin" &&
-          currentTicket.assignedTo &&
-          currentTicket.assignedTo !== userService.getCurrentUserId() ? (
-          <div
-            style={{ padding: "24px", textAlign: "center", color: "#dc3545" }}
-          >
+        ) : currentTicket && userRole === "admin" && currentTicket.assignedTo && currentTicket.assignedTo !== userService.getCurrentUserId() ? (
+          <div className="accessDeniedMessage">
             You do not have access to this chat
           </div>
         ) : currentTicket ? (
           <>
-            <div style={styles.mainHeader}>
-              <div style={styles.ticketTitle}>
+            <div className="mainHeader">
+              <div className="ticketTitle">
                 Ticket# {currentTicket._id.slice(-6)}
               </div>
             </div>
 
-            <div style={styles.chatContent} ref={chatContainerRef}>
+            <div className="chatContent" ref={chatContainerRef}>
               {loadingMessages ? (
-                <div style={styles.loadingOverlay}>Loading messages...</div>
+                <div className="loadingOverlay">Loading messages...</div>
               ) : (
                 <>
                   {currentTicket.firstMessage && (
-                    <div style={styles.messageContainer}>
-                      <div style={styles.userMessageBubble}>
+                    <div className="messageContainer">
+                      <div className="messageBubble userMessageBubble">
                         {currentTicket.firstMessage}
-
-                        <div style={styles.userMessageTime}>
+                        <div className="messageTime userMessageTime">
                           {formatTime(currentTicket.createdAt)}
                         </div>
                       </div>
@@ -1118,24 +652,10 @@ export default function ContactCenter() {
                   {currentTicket.messages?.map((message, index) => {
                     const isUserMessage = message.sender === "user";
                     return (
-                      <div key={index} style={styles.messageContainer}>
-                        <div
-                          style={{
-                            ...styles.messageBubble,
-                            ...(isUserMessage
-                              ? styles.userMessageBubble
-                              : styles.agentMessageBubble),
-                          }}
-                        >
+                      <div key={index} className="messageContainer">
+                        <div className={`messageBubble ${isUserMessage ? 'userMessageBubble' : 'agentMessageBubble'}`}>
                           {message.message}
-                          <div
-                            style={{
-                              ...styles.messageTime,
-                              ...(isUserMessage
-                                ? styles.userMessageTime
-                                : styles.agentMessageTime),
-                            }}
-                          >
+                          <div className={`messageTime ${isUserMessage ? 'userMessageTime' : 'agentMessageTime'}`}>
                             {formatTime(message.timestamp)}
                           </div>
                         </div>
@@ -1147,10 +667,10 @@ export default function ContactCenter() {
               )}
             </div>
 
-            <div style={styles.inputContainer}>
-              <div style={styles.inputWrapper}>
+            <div className="inputContainer">
+              <div className="inputWrapper">
                 <input
-                  style={styles.input}
+                  className="input"
                   type="text"
                   placeholder="Type a message..."
                   value={message}
@@ -1158,7 +678,7 @@ export default function ContactCenter() {
                   onKeyDown={handleKeyPress}
                 />
                 <button
-                  style={styles.sendButton}
+                  className="sendButton"
                   onClick={handleSend}
                   disabled={sendingMessage}
                 >
@@ -1168,57 +688,53 @@ export default function ContactCenter() {
             </div>
           </>
         ) : (
-          <div
-            style={{ padding: "24px", textAlign: "center", color: "#6c757d" }}
-          >
+          <div className="selectChatMessage">
             Select a chat to start messaging
           </div>
         )}
       </div>
 
-      {/* Details Sidebar */}
+      {/*----------- Details Sidebar ------------*/}
       {userRole === "member" && tickets.length === 0 ? (
-        <div style={{ padding: "24px", textAlign: "center", color: "#6c757d" }}>
+        <div className="noTicketsMessage">
           No tickets assigned to you
         </div>
       ) : (
-        currentTicket &&
-        (!currentTicket.assignedTo ||
-          currentTicket.assignedTo === userService.getCurrentUserId()) && (
-          <div style={styles.detailsSidebar}>
-            <div style={styles.detailsHeader}>
-              <h2 style={styles.detailsTitle}>Details</h2>
+        currentTicket && (!currentTicket.assignedTo || currentTicket.assignedTo === userService.getCurrentUserId()) && (
+          <div className="detailsSidebar">
+            <div className="detailsHeader">
+              <h2 className="detailsTitle">Details</h2>
 
-              <div style={styles.detailItem}>
-                <User style={styles.detailIcon} size={16} />
-                <span style={styles.detailText}>
+              <div className="detailItem">
+                <User className="detailIcon" size={16} />
+                <span className="detailText">
                   {currentTicket.userInfo?.name || "Anonymous"}
                 </span>
               </div>
 
               {currentTicket.userInfo?.phone && (
-                <div style={styles.detailItem}>
-                  <Phone style={styles.detailIcon} size={16} />
-                  <span style={styles.detailText}>
+                <div className="detailItem">
+                  <Phone className="detailIcon" size={16} />
+                  <span className="detailText">
                     {currentTicket.userInfo.phone}
                   </span>
                 </div>
               )}
 
               {currentTicket.userInfo?.email && (
-                <div style={styles.detailItem}>
-                  <Mail style={styles.detailIcon} size={16} />
-                  <span style={styles.detailText}>
+                <div className="detailItem">
+                  <Mail className="detailIcon" size={16} />
+                  <span className="detailText">
                     {currentTicket.userInfo.email}
                   </span>
                 </div>
               )}
             </div>
 
-            <div style={styles.detailsSection}>
-              <h3 style={styles.detailsTitle}>Assign to</h3>
+            <div className="detailsSection">
+              <h3 className="detailsTitle">Assign to</h3>
               <select
-                style={styles.statusDropdown}
+                className="statusDropdown"
                 value={currentTicket?.assignedTo || ""}
                 onChange={(e) => handleAssignTicket(e.target.value)}
                 disabled={loadingTeamMembers || userRole === "member"}
@@ -1231,16 +747,16 @@ export default function ContactCenter() {
                 ))}
               </select>
               {loadingTeamMembers && (
-                <div style={styles.teamMemberLoading}>
+                <div className="teamMemberLoading">
                   Loading team members...
                 </div>
               )}
             </div>
 
-            <div style={styles.detailsSection}>
-              <h3 style={styles.detailsTitle}>Ticket status</h3>
+            <div className="detailsSection">
+              <h3 className="detailsTitle">Ticket status</h3>
               <select
-                style={styles.statusDropdown}
+                className="statusDropdown"
                 value={currentTicket.status || "unresolved"}
                 onChange={(e) => handleStatusChange(e.target.value)}
               >

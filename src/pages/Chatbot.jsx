@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useChatCustomization } from "../context/ChatCustomizationContext";
-import { MessageSquare, Send, Edit2 } from "lucide-react";
+import { MessageSquare, Send } from "lucide-react";
 import { ticketService } from "../services/api";
+import styles from "./Chatbot.module.css";
+import { toast } from "react-hot-toast";
 
 export default function Chatbot() {
   const { settings } = useChatCustomization();
@@ -35,7 +37,6 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const messagesContainerRef = useRef(null);
- 
 
   useEffect(() => {
     if (!ticketId) return;
@@ -195,78 +196,41 @@ export default function Chatbot() {
     setTimeout(scrollToBottom, 100);
   };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
+  const handleSendMessage = async () => {
     if (!followUp.trim()) return;
 
-    setLoading(true);
-    setError(null);
-
     try {
-      if (!ticketId) {
-        const createResponse = await fetch(
-          "https://ticket-system-yogiraj.onrender.com/api/tickets/create",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              firstMessage: followUp,
-              status: "unresolved",
-              priority: "medium",
-              category: "general",
-              assignedTo: null,
-            }),
-          }
-        );
+      let currentTicketId = ticketId;
 
-        if (!createResponse.ok) {
-          throw new Error("Failed to create ticket");
-        }
+      // If no ticket exists, create one
+      if (!currentTicketId) {
+        const newTicket = await ticketService.createTicket({
+          firstMessage: followUp,
+          userInfo: formData,
+        });
+        currentTicketId = newTicket._id;
+        setTicketId(currentTicketId);
 
-        const newTicket = await createResponse.json();
-        setTicketId(newTicket._id);
-
-        setMessages((prev) => [
-          ...prev,
-          {
-            sender: "user",
-            message: followUp,
-            timestamp: new Date().toISOString(),
-          },
-        ]);
-
+        // Show form after first message
         setStep("form");
-        setFollowUp("");
+
+        // Update local state with the new ticket's messages
+        setMessages(newTicket.messages);
       } else {
-        const response = await fetch(
-          `https://ticket-system-yogiraj.onrender.com/api/tickets/${ticketId}/message`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              sender: "user",
-              message: followUp,
-            }),
-          }
+        // Add the message to the existing ticket
+        const updatedTicket = await ticketService.addMessage(
+          currentTicketId,
+          "user",
+          followUp
         );
-
-        if (!response.ok) {
-          throw new Error("Failed to send message");
-        }
-
-        const updatedTicket = await response.json();
-        setMessages(updatedTicket.messages || []);
-        setFollowUp("");
+        setMessages(updatedTicket.messages);
       }
-    } catch (err) {
-      console.error("Error:", err);
-      setError("Failed to process your message. Please try again.");
-    } finally {
-      setLoading(false);
+
+      setFollowUp("");
+      setTimeout(scrollToBottom, 100);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message. Please try again.");
     }
   };
 
@@ -282,7 +246,7 @@ export default function Chatbot() {
       setError("");
 
       const updateResponse = await fetch(
-        `https://ticket-system-yogiraj.onrender.com/api/tickets/${ticketId}/update`,
+        `http://localhost:5000/api/tickets/${ticketId}/update`,
         {
           method: "PUT",
           headers: {
@@ -329,44 +293,6 @@ export default function Chatbot() {
     }
   };
 
-  const messageStyles = {
-    container: {
-      display: "flex",
-      marginBottom: "8px",
-      justifyContent: "flex-start",
-    },
-    userContainer: {
-      display: "flex",
-      marginBottom: "8px",
-      justifyContent: "flex-end",
-    },
-    message: {
-      maxWidth: "80%",
-      padding: "8px 12px",
-      borderRadius: "12px",
-      backgroundColor: "#f0f0f0",
-      color: "#333",
-      fontSize: "13px",
-      lineHeight: "1.4",
-    },
-    userMessage: {
-      maxWidth: "80%",
-      padding: "8px 12px",
-      borderRadius: "12px",
-      backgroundColor: "#007bff",
-      color: "white",
-      fontSize: "13px",
-      lineHeight: "1.4",
-    },
-    timestamp: {
-      fontSize: "10px",
-      color: "#666",
-      marginTop: "4px",
-      textAlign: "right",
-      opacity: "0.7",
-    },
-  };
-
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
@@ -388,19 +314,29 @@ export default function Chatbot() {
     }, 100);
   };
 
-
-
-  
-
   return (
-    <div className="chat-widget">
+    <div className={styles["chat-widget"]}>
       {isOpen && (
-        <div className={`chat-container ${isOpen ? "open" : ""}`}>
+        <div
+          className={`${styles["chat-container"]} ${isOpen ? styles.open : ""}`}
+        >
           <div
-            className="chat-header"
-            style={{ backgroundColor: localSettings?.headerColor || "#1a365d" }}
+            className={styles["chat-header"]}
+            style={{ backgroundColor: settings?.headerColor || "#1a365d" }}
           >
-            <h3><span style={{backgroundColor: "#007bff",  borderRadius: "50%",padding: "5px 10px",marginRight: "5px"}}>H</span>Hubly</h3>
+            <h3>
+              <span
+                style={{
+                  backgroundColor: "#007bff",
+                  borderRadius: "50%",
+                  padding: "5px 10px",
+                  marginRight: "5px",
+                }}
+              >
+                H
+              </span>
+              Hubly
+            </h3>
             <div style={{ display: "flex", gap: "10px" }}>
               <button
                 onClick={handleNewChat}
@@ -433,42 +369,37 @@ export default function Chatbot() {
           </div>
 
           <div
-            className="chat-body"
+            className={styles["chat-body"]}
             ref={messagesContainerRef}
             style={{
-              backgroundColor: localSettings?.backgroundColor || "#FFFFFF",
-              height: "calc(100% - 120px)",
-              overflowY: "auto",
-              scrollBehavior: "smooth",
+              backgroundColor: settings?.backgroundColor || "#FFFFFF",
             }}
           >
-            <div className="chat-messages">
+            <div className={styles["chat-messages"]}>
               {messages.length === 0 ? (
                 <div style={{ marginBottom: "15px", padding: "10px" }}>
-                  <div style={messageStyles.container}>
+                  <div className={styles["message-container"]}>
                     <div
+                      className={styles.message}
                       style={{
-                        ...messageStyles.message,
                         backgroundColor: "#e8f1fd",
                         color: "#333",
                         marginBottom: "8px",
                       }}
                     >
-                      {localSettings?.welcomeMessage ||
+                      {settings?.welcomeMessage ||
                         "Welcome! How can I help you today?"}
                     </div>
                   </div>
-                  {localSettings?.customMessages?.map((msg, index) => (
+                  {settings?.customMessages?.map((msg, index) => (
                     <div
                       key={index}
-                      style={{
-                        ...messageStyles.container,
-                        marginBottom: "8px",
-                      }}
+                      className={styles["message-container"]}
+                      style={{ marginBottom: "8px" }}
                     >
                       <div
+                        className={styles.message}
                         style={{
-                          ...messageStyles.message,
                           backgroundColor: "#e8f1fd",
                           color: "#333",
                         }}
@@ -482,21 +413,21 @@ export default function Chatbot() {
                 messages.map((msg, index) => (
                   <div
                     key={index}
-                    style={
+                    className={
                       msg.sender === "user"
-                        ? messageStyles.userContainer
-                        : messageStyles.container
+                        ? styles["user-message-container"]
+                        : styles["message-container"]
                     }
                   >
                     <div
-                      style={
+                      className={
                         msg.sender === "user"
-                          ? messageStyles.userMessage
-                          : messageStyles.message
+                          ? styles["user-message"]
+                          : styles.message
                       }
                     >
                       {msg.message}
-                      <div style={messageStyles.timestamp}>
+                      <div className={styles.timestamp}>
                         {new Date(msg.timestamp).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -509,10 +440,10 @@ export default function Chatbot() {
             </div>
 
             {step === "form" && (
-              <div className="chat-form-container">
+              <div className={styles["chat-form-container"]}>
                 <h3>Please provide your details</h3>
                 <form onSubmit={handleSubmit}>
-                  <div className="form-group">
+                  <div className={styles["form-group"]}>
                     <label>Name</label>
                     <input
                       type="text"
@@ -520,13 +451,11 @@ export default function Chatbot() {
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
                       }
-                      placeholder={
-                        localSettings?.introForm?.name || "Your name"
-                      }
+                      placeholder={settings?.introForm?.name || "Your name"}
                       required
                     />
                   </div>
-                  <div className="form-group">
+                  <div className={styles["form-group"]}>
                     <label>Email</label>
                     <input
                       type="email"
@@ -535,12 +464,12 @@ export default function Chatbot() {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       placeholder={
-                        localSettings?.introForm?.email || "example@email.com"
+                        settings?.introForm?.email || "example@email.com"
                       }
                       required
                     />
                   </div>
-                  <div className="form-group">
+                  <div className={styles["form-group"]}>
                     <label>Phone</label>
                     <input
                       type="tel"
@@ -549,14 +478,14 @@ export default function Chatbot() {
                         setFormData({ ...formData, phone: e.target.value })
                       }
                       placeholder={
-                        localSettings?.introForm?.phone || "+1 (000) 000-0000"
+                        settings?.introForm?.phone || "+1 (000) 000-0000"
                       }
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="submit-button"
+                    className={styles["submit-button"]}
                   >
                     {loading ? "Submitting..." : "Submit"}
                   </button>
@@ -581,21 +510,21 @@ export default function Chatbot() {
           </div>
 
           {step !== "form" && (
-            <div className="chat-input-container">
+            <div className={styles["chat-input-container"]}>
               <input
                 type="text"
-                className="chat-input"
+                className={styles["chat-input"]}
                 value={followUp}
                 onChange={(e) => setFollowUp(e.target.value)}
                 placeholder="Type a message..."
                 onKeyPress={(e) => e.key === "Enter" && handleSendMessage(e)}
               />
               <button
-                className="send-button"
+                className={styles["send-button"]}
                 onClick={(e) => handleSendMessage(e)}
                 disabled={loading || !followUp.trim()}
                 style={{
-                  backgroundColor: localSettings?.headerColor || "#1a365d",
+                  backgroundColor: settings?.headerColor || "#1a365d",
                 }}
               >
                 <Send size={16} />
@@ -606,10 +535,10 @@ export default function Chatbot() {
       )}
 
       <button
-        className="chat-toggle-btn"
+        className={styles["chat-toggle-btn"]}
         onClick={handleToggle}
         aria-label="Toggle chat"
-        style={{ backgroundColor: localSettings?.headerColor || "#1a365d" }}
+        style={{ backgroundColor: settings?.headerColor || "#1a365d" }}
       >
         <MessageSquare size={18} />
       </button>

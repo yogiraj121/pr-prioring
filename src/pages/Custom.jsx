@@ -1,24 +1,11 @@
 import { useState } from "react";
 import { useChatCustomization } from "../context/ChatCustomizationContext";
-
-// Lucide icons for the sidebar and edit buttons
-import {
-  Home,
-  MessageCircle,
-  BarChart2,
-  FileText,
-  Users,
-  Settings,
-  Send,
-  X,
-  Edit2,
-} from "lucide-react";
+import { saveChatSettings } from "../services/api";
+import { Send, X, Edit2 } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 function ChatBotCustomization() {
   const { settings, updateSettings } = useChatCustomization();
-
-  // State for all customization options
   const [headerColor, setHeaderColor] = useState(
     settings?.headerColor || "#33475B"
   );
@@ -55,46 +42,12 @@ function ChatBotCustomization() {
   const [editingMessage, setEditingMessage] = useState(null);
   const [tempMessage, setTempMessage] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [savedStatus, setSavedStatus] = useState("");
 
-  const updateSettingsAndDispatch = (newSettings) => {
-    window.dispatchEvent(
-      new CustomEvent("chatSettingsUpdated", {
-        detail: newSettings,
-      })
-    );
-  };
-
-  const saveToAPI = async () => {
-    setIsSaving(true);
-    try {
-      const newSettings = {
-        headerColor,
-        backgroundColor,
-        welcomeMessage,
-        customMessages,
-        introForm,
-        missedChatTimer,
-      };
-
-      updateSettingsAndDispatch(newSettings);
-      const success = await updateSettings(newSettings);
-
-      if (success) {
-        setSavedStatus("Settings saved successfully!");
-      } else {
-        setSavedStatus("Error saving settings. Please try again.");
-      }
-
-      setTimeout(() => setSavedStatus(""), 3000);
-    } catch (error) {
-      console.error("Error saving settings:", error);
-      setSavedStatus("Error saving settings. Please try again.");
-      setTimeout(() => setSavedStatus(""), 3000);
-    } finally {
-      setIsSaving(false);
-    }
+  const updateLocalSettings = (newSettings) => {
+    updateSettings(newSettings);
+    setSavedStatus("Settings updated!");
+    setTimeout(() => setSavedStatus(""), 3000);
   };
 
   const handleEditMessage = (index) => {
@@ -112,16 +65,14 @@ function ChatBotCustomization() {
       setTempMessage("");
       setIsEditing(false);
 
-      const newSettings = {
+      updateLocalSettings({
         headerColor,
         backgroundColor,
         welcomeMessage,
         customMessages: updatedMessages,
         introForm,
         missedChatTimer,
-      };
-
-      updateSettingsAndDispatch(newSettings);
+      });
     }
   };
 
@@ -138,16 +89,14 @@ function ChatBotCustomization() {
       setTempMessage("");
       setIsEditing(false);
 
-      const newSettings = {
+      updateLocalSettings({
         headerColor,
         backgroundColor,
         welcomeMessage: tempMessage,
         customMessages,
         introForm,
         missedChatTimer,
-      };
-
-      updateSettingsAndDispatch(newSettings);
+      });
     }
   };
 
@@ -155,8 +104,33 @@ function ChatBotCustomization() {
     setHeaderColor(color);
     setHeaderColorHex(color);
 
-    const newSettings = {
+    updateLocalSettings({
       headerColor: color,
+      backgroundColor,
+      welcomeMessage,
+      customMessages,
+      introForm,
+      missedChatTimer,
+    });
+  };
+
+  const handleBackgroundColorChange = (color) => {
+    setBackgroundColor(color);
+    setBackgroundColorHex(color);
+
+    updateLocalSettings({
+      headerColor,
+      backgroundColor: color,
+      welcomeMessage,
+      customMessages,
+      introForm,
+      missedChatTimer,
+    });
+  };
+
+  const handleSaveSettings = async () => {
+    const newSettings = {
+      headerColor,
       backgroundColor,
       welcomeMessage,
       customMessages,
@@ -164,23 +138,21 @@ function ChatBotCustomization() {
       missedChatTimer,
     };
 
-    updateSettingsAndDispatch(newSettings);
-  };
+    try {
+      await saveChatSettings(newSettings);
+      updateSettings(newSettings);
 
-  const handleBackgroundColorChange = (color) => {
-    setBackgroundColor(color);
-    setBackgroundColorHex(color);
+      // Dispatch custom event to notify Chatbot.jsx of settings update
+      const event = new CustomEvent("chatSettingsUpdated", {
+        detail: newSettings,
+      });
+      window.dispatchEvent(event);
 
-    const newSettings = {
-      headerColor,
-      backgroundColor: color,
-      welcomeMessage,
-      customMessages,
-      introForm,
-      missedChatTimer,
-    };
-
-    updateSettingsAndDispatch(newSettings);
+      alert("Settings saved successfully!");
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      alert("Failed to save settings. Please try again.");
+    }
   };
 
   // Styles
@@ -279,7 +251,9 @@ function ChatBotCustomization() {
     },
     formField: {
       marginBottom: "15px",
+      
     },
+    
     formLabel: {
       display: "block",
       fontSize: "14px",
@@ -364,6 +338,7 @@ function ChatBotCustomization() {
       padding: "15px",
       borderRadius: "8px",
       marginBottom: "15px",
+      width: "80%",
     },
     chatInput: {
       width: "100%",
@@ -465,7 +440,7 @@ function ChatBotCustomization() {
             <div style={styles.chatBody}>
               {/* Intro Form */}
               <div style={styles.introFormContainer}>
-                <div style={{ fontWeight: "bold", marginBottom: "10px" }}>
+                <div style={{ fontWeight: "bold", marginBottom: "10px", color: "#333" ,fontSize: "16px"}}>
                   Introduction Yourself
                 </div>
                 <div style={{ marginBottom: "10px" }}>
@@ -878,12 +853,8 @@ function ChatBotCustomization() {
                 {savedStatus}
               </div>
             )}
-            <button
-              style={styles.saveButton}
-              onClick={saveToAPI}
-              disabled={isSaving}
-            >
-              {isSaving ? "Saving..." : "Save"}
+            <button style={styles.saveButton} onClick={handleSaveSettings}>
+              Save Settings
             </button>
           </div>
         </div>
