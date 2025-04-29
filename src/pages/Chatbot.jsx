@@ -254,11 +254,6 @@ export default function Chatbot() {
         },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update ticket");
-      }
-
       setMessages((prev) => [
         ...prev,
         {
@@ -278,7 +273,8 @@ export default function Chatbot() {
     } catch (err) {
       console.error("Error submitting form:", err);
       setError(
-        err.message || "Failed to submit your details. Please try again."
+        err.response?.data?.error ||
+          "Failed to submit your details. Please try again."
       );
     } finally {
       setLoading(false);
