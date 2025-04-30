@@ -13,7 +13,7 @@ export default function Chatbot() {
   const [localSettings, setLocalSettings] = useState(settings);
   const [isOpen, setIsOpen] = useState(() => {
     const saved = localStorage.getItem("chatIsOpen");
-    return saved === "true";
+    return saved === "true" ? false : false;
   });
   const [ticketId, setTicketId] = useState(() => {
     const saved = localStorage.getItem("chatTicketId");
