@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
 
 const ChatCustomizationContext = createContext();
 
@@ -22,32 +28,61 @@ const defaultSettings = {
 
 export const ChatCustomizationProvider = ({ children }) => {
   const [settings, setSettings] = useState(() => {
-    const savedSettings = localStorage.getItem("chatbotSettings");
-    return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
+    try {
+      const savedSettings = localStorage.getItem("chatbotSettings");
+      return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
+    } catch (error) {
+      console.error("Error loading settings:", error);
+      return defaultSettings;
+    }
   });
 
-  const updateSettings = (newSettings) => {
-    // Update state
-    setSettings(newSettings);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    // Save to localStorage
-    localStorage.setItem("chatbotSettings", JSON.stringify(newSettings));
+  // Memoized update function to prevent unnecessary re-renders
+  const updateSettings = useCallback((newSettings) => {
+    setIsLoading(true);
+    setError(null);
 
-    // Dispatch event with a small delay to ensure state is updated
-    setTimeout(() => {
-      const event = new CustomEvent("chatSettingsUpdated", {
-        detail: newSettings,
-      });
-      window.dispatchEvent(event);
-    }, 0);
+    try {
+      // Update state
+      setSettings(newSettings);
 
-    return true;
-  };
+      // Save to localStorage
+      localStorage.setItem("chatbotSettings", JSON.stringify(newSettings));
+
+      // Dispatch event with a small delay to ensure state is updated
+      setTimeout(() => {
+        const event = new CustomEvent("chatSettingsUpdated", {
+          detail: newSettings,
+        });
+        window.dispatchEvent(event);
+      }, 0);
+
+      return true;
+    } catch (error) {
+      setError("Failed to update settings");
+      console.error("Error updating settings:", error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Reset to default settings
+  const resetSettings = useCallback(() => {
+    updateSettings(defaultSettings);
+  }, [updateSettings]);
 
   // Listen for settings updates from other components
   useEffect(() => {
     const handleSettingsUpdate = (event) => {
-      setSettings(event.detail);
+      try {
+        setSettings(event.detail);
+      } catch (error) {
+        console.error("Error handling settings update:", error);
+      }
     };
 
     window.addEventListener("chatSettingsUpdated", handleSettingsUpdate);
@@ -56,8 +91,35 @@ export const ChatCustomizationProvider = ({ children }) => {
     };
   }, []);
 
+  // Sync settings across tabs
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "chatbotSettings") {
+        try {
+          const newSettings = JSON.parse(e.newValue);
+          setSettings(newSettings);
+        } catch (error) {
+          console.error("Error syncing settings:", error);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const value = {
+    settings,
+    updateSettings,
+    resetSettings,
+    isLoading,
+    error,
+  };
+
   return (
-    <ChatCustomizationContext.Provider value={{ settings, updateSettings }}>
+    <ChatCustomizationContext.Provider value={value}>
       {children}
     </ChatCustomizationContext.Provider>
   );

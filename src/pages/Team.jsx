@@ -316,7 +316,7 @@ const TeamManagement = () => {
                           </div>
                         </td>
                         <td className="tableCell">
-                          {member.phone || "No phone"}
+                          {member.phone || "+0000000000"}
                         </td>
                         <td className="tableCell">{member.email}</td>
                         <td className="tableCell">

@@ -5,8 +5,8 @@ import { ticketService } from "../services/api";
 import styles from "./Chatbot.module.css";
 import { toast } from "react-hot-toast";
 import api from "../services/api";
-import eclipse from "../../public/images/Ellipse 5.png"
-import chatIcon from "../../public/images/chat.png"
+import eclipse from "../../public/images/Ellipse 5.png";
+import chatIcon from "../../public/images/chat.png";
 
 export default function Chatbot() {
   const { settings } = useChatCustomization();
@@ -114,23 +114,23 @@ export default function Chatbot() {
   useEffect(() => {
     const handleSettingsUpdate = (event) => {
       const newSettings = event.detail;
-      setLocalSettings(newSettings);
-      if (!ticketId) {
+      // Update messages if they're empty
+      if (messages.length === 0) {
         const initialMessages = [];
-        if (newSettings.welcomeMessage) {
-          initialMessages.push({
-            sender: "bot",
-            message: newSettings.welcomeMessage,
-            timestamp: new Date().toISOString(),
-          });
-        }
         if (newSettings.customMessages?.length > 0) {
           newSettings.customMessages.forEach((msg) => {
             initialMessages.push({
+              text: msg,
               sender: "bot",
-              message: msg,
               timestamp: new Date().toISOString(),
             });
+          });
+        }
+        if (newSettings.welcomeMessage) {
+          initialMessages.push({
+            text: newSettings.welcomeMessage,
+            sender: "bot",
+            timestamp: new Date().toISOString(),
           });
         }
         setMessages(initialMessages);
@@ -141,7 +141,7 @@ export default function Chatbot() {
     return () => {
       window.removeEventListener("chatSettingsUpdated", handleSettingsUpdate);
     };
-  }, [ticketId]);
+  }, [messages.length]);
 
   const scrollToBottom = useCallback(() => {
     if (messagesContainerRef.current) {
@@ -317,7 +317,6 @@ export default function Chatbot() {
             <h3>
               <span
                 style={{
-                  
                   borderRadius: "50%",
                   marginRight: "5px",
                 }}
@@ -437,10 +436,8 @@ export default function Chatbot() {
                     <input
                       type="text"
                       value={formData.name}
-                      
                       onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value }
-                        )
+                        setFormData({ ...formData, name: e.target.value })
                       }
                       placeholder={settings?.introForm?.name || "Your name"}
                       required
