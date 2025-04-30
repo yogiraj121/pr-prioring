@@ -111,9 +111,12 @@ export default function Chatbot() {
     }
   }, [settings, ticketId, messages.length]);
 
+  // Listen for settings updates
   useEffect(() => {
     const handleSettingsUpdate = (event) => {
       const newSettings = event.detail;
+      setLocalSettings(newSettings);
+
       // Update messages if they're empty
       if (messages.length === 0) {
         const initialMessages = [];
@@ -137,11 +140,43 @@ export default function Chatbot() {
       }
     };
 
+    // Also check localStorage periodically for changes
+    const checkSettingsInterval = setInterval(() => {
+      const storedSettings = localStorage.getItem("chatSettings");
+      if (storedSettings) {
+        const parsedSettings = JSON.parse(storedSettings);
+        if (JSON.stringify(parsedSettings) !== JSON.stringify(localSettings)) {
+          setLocalSettings(parsedSettings);
+          if (messages.length === 0) {
+            const initialMessages = [];
+            if (parsedSettings.customMessages?.length > 0) {
+              parsedSettings.customMessages.forEach((msg) => {
+                initialMessages.push({
+                  text: msg,
+                  sender: "bot",
+                  timestamp: new Date().toISOString(),
+                });
+              });
+            }
+            if (parsedSettings.welcomeMessage) {
+              initialMessages.push({
+                text: parsedSettings.welcomeMessage,
+                sender: "bot",
+                timestamp: new Date().toISOString(),
+              });
+            }
+            setMessages(initialMessages);
+          }
+        }
+      }
+    }, 1000); // Check every second
+
     window.addEventListener("chatSettingsUpdated", handleSettingsUpdate);
     return () => {
       window.removeEventListener("chatSettingsUpdated", handleSettingsUpdate);
+      clearInterval(checkSettingsInterval);
     };
-  }, [messages.length]);
+  }, [messages.length, localSettings]);
 
   const scrollToBottom = useCallback(() => {
     if (messagesContainerRef.current) {
@@ -304,6 +339,21 @@ export default function Chatbot() {
     }, 100);
   };
 
+  // Add this function to determine text color based on background color
+  const getContrastingTextColor = (backgroundColor) => {
+    // Convert hex to RGB
+    const hex = backgroundColor.replace("#", "");
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+
+    // Calculate relative luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    // Return black for light backgrounds, white for dark backgrounds
+    return luminance > 0.5 ? "#000000" : "#FFFFFF";
+  };
+
   return (
     <div className={styles["chat-widget"]}>
       {isOpen && (
@@ -312,7 +362,12 @@ export default function Chatbot() {
         >
           <div
             className={styles["chat-header"]}
-            style={{ backgroundColor: settings?.headerColor || "#1a365d" }}
+            style={{
+              backgroundColor: settings?.headerColor || "#1a365d",
+              color: getContrastingTextColor(
+                settings?.headerColor || "#1a365d"
+              ),
+            }}
           >
             <h3>
               <span
@@ -331,7 +386,9 @@ export default function Chatbot() {
                 style={{
                   background: "none",
                   border: "none",
-                  color: "white",
+                  color: getContrastingTextColor(
+                    settings?.headerColor || "#1a365d"
+                  ),
                   cursor: "pointer",
                   padding: "8px",
                   fontSize: "13px",
@@ -345,7 +402,9 @@ export default function Chatbot() {
                 style={{
                   background: "none",
                   border: "none",
-                  color: "white",
+                  color: getContrastingTextColor(
+                    settings?.headerColor || "#1a365d"
+                  ),
                   cursor: "pointer",
                   padding: "8px",
                   fontSize: "18px",
@@ -413,6 +472,17 @@ export default function Chatbot() {
                           ? styles["user-message"]
                           : styles.message
                       }
+                      style={{
+                        backgroundColor:
+                          msg.sender === "user"
+                            ? settings?.userMessageColor || "#e8f1fd"
+                            : settings?.botMessageColor || "#f0f0f0",
+                        color: getContrastingTextColor(
+                          msg.sender === "user"
+                            ? settings?.userMessageColor || "#e8f1fd"
+                            : settings?.botMessageColor || "#f0f0f0"
+                        ),
+                      }}
                     >
                       {msg.message}
                       <div className={styles.timestamp}>
