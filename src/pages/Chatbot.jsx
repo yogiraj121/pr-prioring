@@ -115,68 +115,33 @@ export default function Chatbot() {
   useEffect(() => {
     const handleSettingsUpdate = (event) => {
       const newSettings = event.detail;
-      setLocalSettings(newSettings);
-
-      // Update messages if they're empty
-      if (messages.length === 0) {
+      if (!ticketId && messages.length === 0) {
         const initialMessages = [];
+        if (newSettings.welcomeMessage) {
+          initialMessages.push({
+            sender: "bot",
+            message: newSettings.welcomeMessage,
+            timestamp: new Date().toISOString(),
+          });
+        }
         if (newSettings.customMessages?.length > 0) {
           newSettings.customMessages.forEach((msg) => {
             initialMessages.push({
-              text: msg,
               sender: "bot",
+              message: msg,
               timestamp: new Date().toISOString(),
             });
-          });
-        }
-        if (newSettings.welcomeMessage) {
-          initialMessages.push({
-            text: newSettings.welcomeMessage,
-            sender: "bot",
-            timestamp: new Date().toISOString(),
           });
         }
         setMessages(initialMessages);
       }
     };
 
-    // Also check localStorage periodically for changes
-    const checkSettingsInterval = setInterval(() => {
-      const storedSettings = localStorage.getItem("chatSettings");
-      if (storedSettings) {
-        const parsedSettings = JSON.parse(storedSettings);
-        if (JSON.stringify(parsedSettings) !== JSON.stringify(localSettings)) {
-          setLocalSettings(parsedSettings);
-          if (messages.length === 0) {
-            const initialMessages = [];
-            if (parsedSettings.customMessages?.length > 0) {
-              parsedSettings.customMessages.forEach((msg) => {
-                initialMessages.push({
-                  text: msg,
-                  sender: "bot",
-                  timestamp: new Date().toISOString(),
-                });
-              });
-            }
-            if (parsedSettings.welcomeMessage) {
-              initialMessages.push({
-                text: parsedSettings.welcomeMessage,
-                sender: "bot",
-                timestamp: new Date().toISOString(),
-              });
-            }
-            setMessages(initialMessages);
-          }
-        }
-      }
-    }, 1000); // Check every second
-
     window.addEventListener("chatSettingsUpdated", handleSettingsUpdate);
     return () => {
       window.removeEventListener("chatSettingsUpdated", handleSettingsUpdate);
-      clearInterval(checkSettingsInterval);
     };
-  }, [messages.length, localSettings]);
+  }, [ticketId, messages.length]);
 
   const scrollToBottom = useCallback(() => {
     if (messagesContainerRef.current) {

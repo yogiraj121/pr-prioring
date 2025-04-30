@@ -52,13 +52,11 @@ export const ChatCustomizationProvider = ({ children }) => {
       // Save to localStorage
       localStorage.setItem("chatbotSettings", JSON.stringify(newSettings));
 
-      // Dispatch event with a small delay to ensure state is updated
-      setTimeout(() => {
-        const event = new CustomEvent("chatSettingsUpdated", {
-          detail: newSettings,
-        });
-        window.dispatchEvent(event);
-      }, 0);
+      // Dispatch event immediately
+      const event = new CustomEvent("chatSettingsUpdated", {
+        detail: newSettings,
+      });
+      window.dispatchEvent(event);
 
       return true;
     } catch (error) {
@@ -79,7 +77,10 @@ export const ChatCustomizationProvider = ({ children }) => {
   useEffect(() => {
     const handleSettingsUpdate = (event) => {
       try {
-        setSettings(event.detail);
+        if (event.detail) {
+          setSettings(event.detail);
+          localStorage.setItem("chatbotSettings", JSON.stringify(event.detail));
+        }
       } catch (error) {
         console.error("Error handling settings update:", error);
       }
