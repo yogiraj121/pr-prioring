@@ -15,22 +15,7 @@ const LoginComponent = () => {
   const location = useLocation();
   const { login } = useAuth();
 
-  useEffect(() => {
-    // Check if user came from registration page
-    const fromRegistration = location.state?.fromRegistration;
-    const registeredEmail = location.state?.email;
 
-    if (fromRegistration) {
-      setSuccessMessage(
-        "Account created successfully ! Please log in with your new account."
-      );
-
-      // Pre-fill the email if it was passed from signup
-      if (registeredEmail) {
-        setEmail(registeredEmail);
-      }
-    }
-  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,10 +40,12 @@ const LoginComponent = () => {
       // Redirect to intended destination or dashboard
       const intendedPath = location.state?.from || "/dashboard";
       navigate(intendedPath);
+      toast.success("Login successful");
     } catch (err) {
       console.error("Login error:", err);
       console.error("Error response:", err.response?.data);
       setError(err.response?.data?.error || "Login failed. Please try again.");
+      toast.error("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }

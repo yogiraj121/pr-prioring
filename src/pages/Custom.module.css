@@ -3,6 +3,7 @@
   height: 100vh;
   font-family: Arial, sans-serif;
 }
+
 .sidebar {
   width: 85px;
 }
@@ -11,10 +12,12 @@
   background-color: #e9e9e9;
   color: #1e88e5;
 }
+
 .content {
   flex: 1;
   display: flex;
 }
+
 .chatPreview {
   flex: 1;
   background-color: #f9f9f9;
@@ -23,36 +26,42 @@
   flex-direction: column;
   align-items: center;
 }
+
 .customizationPanel {
   flex: 1;
   background-color: #fff;
   padding: 20px;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .title {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 20px;
   color: #333;
 }
-.optionSection   {
+
+.optionSection {
   margin-bottom: 30px;
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .sectionTitle {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 15px;
   color: #333;
 }
+
 .colorOptions {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
 }
+
 .colorCircle {
   width: 40px;
   height: 40px;
@@ -60,9 +69,11 @@
   cursor: pointer;
   border: 2px solid transparent;
 }
+
 .colorCircleSelected {
   border: 2px solid #333;
 }
+
 .colorInput {
   padding: 8px;
   width: 100%;
@@ -71,35 +82,39 @@
   border-radius: 4px;
   margin-top: 10px;
 }
-.customMessage {
-  background-color: #f5f5f5;
+
+.customMessageContainer {
+  background-color: #fff;
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
-.messageText {
+
+.customMessageText {
   flex: 1;
+  font-size: 14px;
+  color: #333;
 }
-.editButton {
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #555;
-  padding: 5px;
+
+.customMessageWrapper {
+  margin-left: 10px;
+  width: 150px;
 }
+
 .formField {
   margin-bottom: 15px;
-  
 }
+
 .formLabel {
   display: block;
   font-size: 14px;
   color: #666;
   margin-bottom: 5px;
 }
+
 .formInput {
   width: 100%;
   padding: 10px;
@@ -107,6 +122,7 @@
   border-radius: 4px;
   font-size: 14px;
 }
+
 .button {
   background-color: #1e4d7b;
   color: white;
@@ -118,6 +134,7 @@
   font-weight: bold;
   width: 100%;
 }
+
 .chatContainer {
   width: 300px;
   border: 1px solid #ddd;
@@ -126,13 +143,15 @@
   background-color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
 .chatHeader {
-  background-color: var(--headerColor);
+  background-color: var(--header-color);
   color: #fff;
   padding: 15px;
   display: flex;
   align-items: center;
 }
+
 .chatAvatar {
   width: 30px;
   height: 30px;
@@ -145,46 +164,30 @@
   font-size: 14px;
   color: #fff;
 }
+
 .chatBody {
-  background-color: var(--backgroundColor);
+  background-color: var(--background-color);
   padding: 15px;
   height: 400px;
   display: flex;
   flex-direction: column;
 }
-.messageContainer {
-  margin-bottom: 10px;
-}
-.botMessageBubble {
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 15px;
-  max-width: 80%;
-  display: inline-block;
-}
-.userMessageContainer {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-}
-.userMessageBubble {
-  background-color: #e1f5fe;
-  padding: 10px;
-  border-radius: 15px;
-  max-width: 80%;
-}
+
 .introFormContainer {
   background-color: #fff;
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 15px;
+  width: 80%;
 }
+
 .chatInput {
   width: 100%;
   display: flex;
   border-top: 1px solid #ddd;
   padding: 10px;
 }
+
 .chatInputField {
   flex: 1;
   border: none;
@@ -193,12 +196,14 @@
   font-size: 14px;
   color: #999;
 }
+
 .sendButton {
   background: none;
   border: none;
   color: #1e88e5;
   cursor: pointer;
 }
+
 .welcomeMessageContainer {
   display: flex;
   background-color: #fff;
@@ -207,19 +212,23 @@
   margin-bottom: 10px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 .welcomeMessageText {
   flex: 1;
   font-size: 14px;
 }
+
 .welcomeMessageDate {
   font-size: 12px;
   color: #999;
 }
+
 .timerContainer {
   display: flex;
   gap: 5px;
   margin-bottom: 10px;
 }
+
 .timerInput {
   width: 50px;
   padding: 8px;
@@ -227,11 +236,13 @@
   border-radius: 4px;
   text-align: center;
 }
+
 .timerSeparator {
   align-self: center;
   font-size: 20px;
   color: #999;
 }
+
 .saveButton {
   background-color: #1e4d7b;
   color: white;
@@ -244,47 +255,20 @@
   margin-top: 20px;
   align-self: flex-end;
 }
+
 .saveButtonContainer {
   display: flex;
   justify-content: flex-end;
 }
+
 .savedStatus {
   color: #4caf50;
   margin-right: 10px;
   align-self: center;
 }
+
 .errorStatus {
   color: #f44336;
   margin-right: 10px;
   align-self: center;
-}
-.mainContentWrapper {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px 0;
-}
-.mainContent {
-  display: flex;
-  gap: 40px;
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.leftColumn {
-  min-width: 400px;
-  max-width: 500px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.rightColumn {
-  min-width: 340px;
-  max-width: 380px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
 }

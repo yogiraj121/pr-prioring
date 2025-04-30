@@ -6,152 +6,79 @@ import Sidebar from "./Sidebar";
 
 function ChatBotCustomization() {
   const { settings, updateSettings } = useChatCustomization();
-  const [headerColor, setHeaderColor] = useState(
-    settings?.headerColor || "#33475B"
-  );
-  const [headerColorHex, setHeaderColorHex] = useState(
-    settings?.headerColor || "#33475B"
-  );
-  const [backgroundColor, setBackgroundColor] = useState(
-    settings?.backgroundColor || "#FFFFFF"
-  );
-  const [backgroundColorHex, setBackgroundColorHex] = useState(
-    settings?.backgroundColor || "#FFFFFF"
-  );
-  const [welcomeMessage, setWelcomeMessage] = useState(
-    settings?.welcomeMessage ||
-      "👋 Want to chat about Hubly? I'm a chatbot here to help you find your way."
-  );
-  const [customMessages, setCustomMessages] = useState(
-    settings?.customMessages || ["How can I help you?", "Ask me anything!"]
-  );
-  const [introForm, setIntroForm] = useState(
-    settings?.introForm || {
-      name: "Your name",
-      phone: "+1 (000) 000-0000",
-      email: "example@gmail.com",
-    }
-  );
-  const [missedChatTimer, setMissedChatTimer] = useState(
-    settings?.missedChatTimer || {
-      hours: "12",
-      minutes: "00",
-      seconds: "00",
-    }
-  );
+  const {
+    headerColor,
+    backgroundColor,
+    welcomeMessage,
+    customMessages,
+    introForm,
+    missedChatTimer,
+  } = settings;
+
+  const [headerColorHex, setHeaderColorHex] = useState(headerColor);
+  const [backgroundColorHex, setBackgroundColorHex] = useState(backgroundColor);
+  const [isEditing, setIsEditing] = useState(false);
   const [editingMessage, setEditingMessage] = useState(null);
   const [tempMessage, setTempMessage] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
   const [savedStatus, setSavedStatus] = useState("");
 
-  const updateLocalSettings = (newSettings) => {
-    updateSettings(newSettings);
-    setSavedStatus("Settings updated!");
-    setTimeout(() => setSavedStatus(""), 3000);
-  };
-
   const handleEditMessage = (index) => {
+    setIsEditing(true);
     setEditingMessage(index);
     setTempMessage(customMessages[index]);
-    setIsEditing(true);
   };
 
   const handleUpdateMessage = () => {
-    if (editingMessage !== null && tempMessage.trim() !== "") {
-      const updatedMessages = [...customMessages];
-      updatedMessages[editingMessage] = tempMessage;
-      setCustomMessages(updatedMessages);
-      setEditingMessage(null);
-      setTempMessage("");
-      setIsEditing(false);
-
-      updateLocalSettings({
-        headerColor,
-        backgroundColor,
-        welcomeMessage,
-        customMessages: updatedMessages,
-        introForm,
-        missedChatTimer,
+    if (editingMessage !== null) {
+      const newMessages = [...customMessages];
+      newMessages[editingMessage] = tempMessage;
+      updateSettings({
+        ...settings,
+        customMessages: newMessages,
       });
+      setIsEditing(false);
+      setEditingMessage(null);
     }
   };
 
   const handleEditWelcomeMessage = () => {
-    setTempMessage(welcomeMessage);
     setIsEditing(true);
     setEditingMessage("welcome");
+    setTempMessage(welcomeMessage);
   };
 
   const handleUpdateWelcomeMessage = () => {
-    if (tempMessage.trim() !== "") {
-      setWelcomeMessage(tempMessage);
-      setEditingMessage(null);
-      setTempMessage("");
-      setIsEditing(false);
-
-      updateLocalSettings({
-        headerColor,
-        backgroundColor,
-        welcomeMessage: tempMessage,
-        customMessages,
-        introForm,
-        missedChatTimer,
-      });
-    }
+    updateSettings({
+      ...settings,
+      welcomeMessage: tempMessage,
+    });
+    setIsEditing(false);
+    setEditingMessage(null);
   };
 
   const handleHeaderColorChange = (color) => {
-    setHeaderColor(color);
     setHeaderColorHex(color);
-
-    updateLocalSettings({
+    updateSettings({
+      ...settings,
       headerColor: color,
-      backgroundColor,
-      welcomeMessage,
-      customMessages,
-      introForm,
-      missedChatTimer,
     });
   };
 
   const handleBackgroundColorChange = (color) => {
-    setBackgroundColor(color);
     setBackgroundColorHex(color);
-
-    updateLocalSettings({
-      headerColor,
+    updateSettings({
+      ...settings,
       backgroundColor: color,
-      welcomeMessage,
-      customMessages,
-      introForm,
-      missedChatTimer,
     });
   };
 
   const handleSaveSettings = async () => {
-    const newSettings = {
-      headerColor,
-      backgroundColor,
-      welcomeMessage,
-      customMessages,
-      introForm,
-      missedChatTimer,
-    };
-
     try {
-      await saveChatSettings(newSettings);
-      updateSettings(newSettings);
-
-      // Dispatch custom event to notify Chatbot.jsx of settings update
-      const event = new CustomEvent("chatSettingsUpdated", {
-        detail: newSettings,
-      });
-      window.dispatchEvent(event);
-
-      alert("Settings saved successfully!");
+      await saveChatSettings(settings);
+      setSavedStatus("Settings saved successfully!");
     } catch (error) {
+      setSavedStatus("Error saving settings");
       console.error("Error saving settings:", error);
-      alert("Failed to save settings. Please try again.");
     }
   };
 
@@ -161,11 +88,11 @@ function ChatBotCustomization() {
       display: "flex",
       height: "100vh",
       fontFamily: "Arial, sans-serif",
+      overflowY: "auto",
     },
     sidebar: {
       width: "85px",
     },
-
     activeIcon: {
       backgroundColor: "#e9e9e9",
       color: "#1e88e5",
@@ -176,17 +103,17 @@ function ChatBotCustomization() {
     },
     chatPreview: {
       flex: 1,
-      backgroundColor: "#f9f9f9",
-      padding: "20px",
+      backgroundColor: "#fff",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
     },
     customizationPanel: {
-      flex: 1,
+      width: "400px",
+      marginLeft: "20px",
+      marginRight: "80px",
       backgroundColor: "#fff",
-      padding: "20px",
-      boxShadow: "-2px 0 10px rgba(0, 0, 0, 0.1)",
+      marginBottom: "80px",
     },
     title: {
       fontSize: "20px",
@@ -252,7 +179,6 @@ function ChatBotCustomization() {
     formField: {
       marginBottom: "15px",
     },
-
     formLabel: {
       display: "block",
       fontSize: "14px",
@@ -260,7 +186,7 @@ function ChatBotCustomization() {
       marginBottom: "5px",
     },
     formInput: {
-      width: "100%",
+      width: "95%",
       padding: "10px",
       border: "1px solid #ddd",
       borderRadius: "4px",
@@ -292,45 +218,12 @@ function ChatBotCustomization() {
       display: "flex",
       alignItems: "center",
     },
-    chatAvatar: {
-      width: "30px",
-      height: "30px",
-      borderRadius: "50%",
-      backgroundColor: "#ff9800",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      marginRight: "10px",
-      fontSize: "14px",
-      color: "#fff",
-    },
     chatBody: {
       backgroundColor: backgroundColor,
       padding: "15px",
-      height: "400px",
+      height: "450px",
       display: "flex",
       flexDirection: "column",
-    },
-    messageContainer: {
-      marginBottom: "10px",
-    },
-    botMessageBubble: {
-      backgroundColor: "#f0f0f0",
-      padding: "10px",
-      borderRadius: "15px",
-      maxWidth: "80%",
-      display: "inline-block",
-    },
-    userMessageContainer: {
-      display: "flex",
-      justifyContent: "flex-end",
-      marginBottom: "10px",
-    },
-    userMessageBubble: {
-      backgroundColor: "#e1f5fe",
-      padding: "10px",
-      borderRadius: "15px",
-      maxWidth: "80%",
     },
     introFormContainer: {
       backgroundColor: "#fff",
@@ -338,6 +231,7 @@ function ChatBotCustomization() {
       borderRadius: "8px",
       marginBottom: "15px",
       width: "80%",
+      height: "100%",
     },
     chatInput: {
       width: "100%",
@@ -346,7 +240,7 @@ function ChatBotCustomization() {
       padding: "10px",
     },
     chatInputField: {
-      flex: 1,
+      width: "80%",
       border: "none",
       outline: "none",
       padding: "5px",
@@ -437,81 +331,42 @@ function ChatBotCustomization() {
 
             {/* Chat Body */}
             <div style={styles.chatBody}>
+              {/* Custom Messages */}
+              <div>
+                {customMessages.map((message, index) => (
+                  <div key={index} style={styles.customMessage}>
+                    <div style={styles.messageText}>{message}</div>
+                  </div>
+                ))}
+              </div>
+
               {/* Intro Form */}
               <div style={styles.introFormContainer}>
-                <div
-                  style={{
-                    fontWeight: "bold",
-                    marginBottom: "10px",
-                    color: "#333",
-                    fontSize: "16px",
-                  }}
-                >
-                  Introduction Yourself
-                </div>
-                <div style={{ marginBottom: "10px" }}>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#666",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    Your name
-                  </div>
+                <div style={styles.sectionTitle}>Introduction Yourself</div>
+                <div style={styles.formField}>
+                  <div style={styles.formLabel}>Your name</div>
                   <input
                     type="text"
                     value={introForm.name}
-                    style={{
-                      width: "100%",
-                      padding: "8px",
-                      border: "1px solid #ddd",
-                      borderRadius: "4px",
-                    }}
+                    style={styles.formInput}
                     readOnly
                   />
                 </div>
-                <div style={{ marginBottom: "10px" }}>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#666",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    Your Phone
-                  </div>
+                <div style={styles.formField}>
+                  <div style={styles.formLabel}>Your Phone</div>
                   <input
                     type="text"
                     value={introForm.phone}
-                    style={{
-                      width: "100%",
-                      padding: "8px",
-                      border: "1px solid #ddd",
-                      borderRadius: "4px",
-                    }}
+                    style={styles.formInput}
                     readOnly
                   />
                 </div>
-                <div style={{ marginBottom: "10px" }}>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#666",
-                      marginBottom: "5px",
-                    }}
-                  >
-                    Your Email
-                  </div>
+                <div style={styles.formField}>
+                  <div style={styles.formLabel}>Your Email</div>
                   <input
                     type="text"
                     value={introForm.email}
-                    style={{
-                      width: "100%",
-                      padding: "8px",
-                      border: "1px solid #ddd",
-                      borderRadius: "4px",
-                    }}
+                    style={styles.formInput}
                     readOnly
                   />
                 </div>
@@ -772,7 +627,7 @@ function ChatBotCustomization() {
                 type="text"
                 value={introForm.name}
                 onChange={(e) =>
-                  setIntroForm({ ...introForm, name: e.target.value })
+                  updateSettings({ ...introForm, name: e.target.value })
                 }
                 style={styles.formInput}
                 placeholder="Enter name field label"
@@ -784,7 +639,7 @@ function ChatBotCustomization() {
                 type="text"
                 value={introForm.phone}
                 onChange={(e) =>
-                  setIntroForm({ ...introForm, phone: e.target.value })
+                  updateSettings({ ...introForm, phone: e.target.value })
                 }
                 style={styles.formInput}
                 placeholder="Enter phone field label"
@@ -796,7 +651,7 @@ function ChatBotCustomization() {
                 type="text"
                 value={introForm.email}
                 onChange={(e) =>
-                  setIntroForm({ ...introForm, email: e.target.value })
+                  updateSettings({ ...introForm, email: e.target.value })
                 }
                 style={styles.formInput}
                 placeholder="Enter email field label"
@@ -804,44 +659,56 @@ function ChatBotCustomization() {
             </div>
           </div>
 
-          {/* Missed Chat Timer */}
+          {/* Timer Settings */}
           <div style={styles.optionSection}>
-            <h3 style={styles.sectionTitle}>Missed chat timer</h3>
+            <h3 style={styles.sectionTitle}>Missed Chat Timer</h3>
             <div style={styles.timerContainer}>
               <input
                 type="text"
                 value={missedChatTimer.hours}
                 onChange={(e) =>
-                  setMissedChatTimer({
-                    ...missedChatTimer,
-                    hours: e.target.value,
+                  updateSettings({
+                    ...settings,
+                    missedChatTimer: {
+                      ...missedChatTimer,
+                      hours: e.target.value,
+                    },
                   })
                 }
                 style={styles.timerInput}
+                placeholder="HH"
               />
               <span style={styles.timerSeparator}>:</span>
               <input
                 type="text"
                 value={missedChatTimer.minutes}
                 onChange={(e) =>
-                  setMissedChatTimer({
-                    ...missedChatTimer,
-                    minutes: e.target.value,
+                  updateSettings({
+                    ...settings,
+                    missedChatTimer: {
+                      ...missedChatTimer,
+                      minutes: e.target.value,
+                    },
                   })
                 }
                 style={styles.timerInput}
+                placeholder="MM"
               />
               <span style={styles.timerSeparator}>:</span>
               <input
                 type="text"
                 value={missedChatTimer.seconds}
                 onChange={(e) =>
-                  setMissedChatTimer({
-                    ...missedChatTimer,
-                    seconds: e.target.value,
+                  updateSettings({
+                    ...settings,
+                    missedChatTimer: {
+                      ...missedChatTimer,
+                      seconds: e.target.value,
+                    },
                   })
                 }
                 style={styles.timerInput}
+                placeholder="SS"
               />
             </div>
           </div>
@@ -865,10 +732,6 @@ function ChatBotCustomization() {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        // ... existing styles ...
-      `}</style>
     </div>
   );
 }

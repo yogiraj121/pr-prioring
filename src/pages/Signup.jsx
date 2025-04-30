@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import "./Signup.css";
 import logo from "../../public/images/logo.png";
 import employee from "../../public/images/employee.png";
+import toast from "react-hot-toast";
 const SignupComponent = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -38,12 +39,12 @@ const SignupComponent = () => {
       !formData.password ||
       !formData.confirmPassword
     ) {
-      setError("All fields are required");
+      toast.error("All fields are required");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 

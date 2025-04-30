@@ -5,6 +5,8 @@ import { ticketService } from "../services/api";
 import styles from "./Chatbot.module.css";
 import { toast } from "react-hot-toast";
 import api from "../services/api";
+import eclipse from "../../public/images/Ellipse 5.png"
+import chatIcon from "../../public/images/chat.png"
 
 export default function Chatbot() {
   const { settings } = useChatCustomization();
@@ -315,13 +317,12 @@ export default function Chatbot() {
             <h3>
               <span
                 style={{
-                  backgroundColor: "#007bff",
+                  
                   borderRadius: "50%",
-                  padding: "5px 10px",
                   marginRight: "5px",
                 }}
               >
-                H
+                <img src={eclipse} alt="Hubly" />
               </span>
               Hubly
             </h3>
