@@ -1,121 +1,125 @@
 import React, { useState, useEffect } from "react";
 import { useChatCustomization } from "../context/ChatCustomizationContext";
+import { saveChatSettings, getChatSettings } from "../services/api";
 import { Send, X, Edit2 } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 const ChatBotCustomization = () => {
   const { settings, updateSettings, isLoading, error } = useChatCustomization();
-  const {
-    headerColor,
-    backgroundColor,
-    welcomeMessage,
-    customMessages,
-    introForm,
-    missedChatTimer,
-  } = settings;
-
-  const [headerColorHex, setHeaderColorHex] = useState(headerColor);
-  const [backgroundColorHex, setBackgroundColorHex] = useState(backgroundColor);
+  const [localSettings, setLocalSettings] = useState(settings);
   const [isEditing, setIsEditing] = useState(false);
-  const [editingMessage, setEditingMessage] = useState(null);
-  const [tempMessage, setTempMessage] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
-  // Handle success/error messages
+  // Fetch settings from backend when component mounts
   useEffect(() => {
-    if (showSuccess) {
-      const timer = setTimeout(() => setShowSuccess(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showSuccess]);
+    const fetchSettings = async () => {
+      try {
+        const savedSettings = await getChatSettings();
+        if (savedSettings) {
+          setLocalSettings(savedSettings);
+          updateSettings(savedSettings);
+        }
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+        setError("Failed to load settings");
+      }
+    };
 
+    fetchSettings();
+  }, []);
+
+  // Update local settings when context settings change
   useEffect(() => {
-    if (showError) {
-      const timer = setTimeout(() => setShowError(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showError]);
+    setLocalSettings(settings);
+  }, [settings]);
 
-  const handleEditMessage = (index) => {
-    setEditingMessage(index);
-    setTempMessage(settings.customMessages[index]);
+  const handleColorChange = (type, value) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
   };
 
-  const handleUpdateMessage = (index) => {
-    const updatedMessages = [...settings.customMessages];
-    updatedMessages[index] = tempMessage;
+  const handleMessageChange = (type, value) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
+  };
 
-    const success = updateSettings({
-      ...settings,
-      customMessages: updatedMessages,
+  const handleCustomMessageChange = (index, value) => {
+    setLocalSettings((prev) => {
+      const newMessages = [...prev.customMessages];
+      newMessages[index] = value;
+      return {
+        ...prev,
+        customMessages: newMessages,
+      };
     });
-
-    if (success) {
-      setShowSuccess(true);
-    } else {
-      setShowError(true);
-    }
-
-    setEditingMessage(null);
-    setTempMessage("");
   };
 
-  const handleEditWelcomeMessage = () => {
-    setIsEditing(true);
-    setEditingMessage("welcome");
-    setTempMessage(welcomeMessage);
+  const handleAddCustomMessage = () => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      customMessages: [...prev.customMessages, ""],
+    }));
   };
 
-  const handleUpdateWelcomeMessage = () => {
-    const success = updateSettings({
-      ...settings,
-      welcomeMessage: tempMessage,
+  const handleRemoveCustomMessage = (index) => {
+    setLocalSettings((prev) => {
+      const newMessages = [...prev.customMessages];
+      newMessages.splice(index, 1);
+      return {
+        ...prev,
+        customMessages: newMessages,
+      };
     });
-
-    if (success) {
-      setShowSuccess(true);
-    } else {
-      setShowError(true);
-    }
-    setIsEditing(false);
-    setEditingMessage(null);
   };
 
-  const handleHeaderColorChange = (color) => {
-    setHeaderColorHex(color);
-    const success = updateSettings({
-      ...settings,
-      headerColor: color,
-    });
-
-    if (success) {
-      setShowSuccess(true);
-    } else {
-      setShowError(true);
+  const handleSave = async () => {
+    try {
+      setIsEditing(false);
+      await saveChatSettings(localSettings);
+      updateSettings(localSettings);
+      setSuccess("Settings saved successfully!");
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      setError("Failed to save settings");
+      setTimeout(() => setError(""), 3000);
     }
   };
 
-  const handleBackgroundColorChange = (color) => {
-    setBackgroundColorHex(color);
-    const success = updateSettings({
-      ...settings,
-      backgroundColor: color,
-    });
+  const handleReset = async () => {
+    try {
+      const defaultSettings = {
+        headerColor: "#33475B",
+        backgroundColor: "#FFFFFF",
+        welcomeMessage:
+          "👋 Want to chat about Hubly? I'm a chatbot here to help you find your way.",
+        customMessages: ["How can I help you?", "Ask me anything!"],
+        introForm: {
+          name: "Your name",
+          phone: "+1 (000) 000-0000",
+          email: "example@gmail.com",
+        },
+        missedChatTimer: {
+          hours: "12",
+          minutes: "00",
+          seconds: "00",
+        },
+      };
 
-    if (success) {
-      setShowSuccess(true);
-    } else {
-      setShowError(true);
-    }
-  };
-
-  const handleSaveSettings = () => {
-    const success = updateSettings(settings);
-    if (success) {
-      setShowSuccess(true);
-    } else {
-      setShowError(true);
+      setLocalSettings(defaultSettings);
+      await saveChatSettings(defaultSettings);
+      updateSettings(defaultSettings);
+      setSuccess("Settings reset successfully!");
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (error) {
+      console.error("Error resetting settings:", error);
+      setError("Failed to reset settings");
+      setTimeout(() => setError(""), 3000);
     }
   };
 
@@ -249,14 +253,14 @@ const ChatBotCustomization = () => {
       boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
     },
     chatHeader: {
-      backgroundColor: headerColor,
+      backgroundColor: localSettings.headerColor,
       color: "#fff",
       padding: "15px",
       display: "flex",
       alignItems: "center",
     },
     chatBody: {
-      backgroundColor: backgroundColor,
+      backgroundColor: localSettings.backgroundColor,
       padding: "15px",
       height: "450px",
       display: "flex",
@@ -382,15 +386,7 @@ const ChatBotCustomization = () => {
 
       {error && <div style={styles.errorMessage}>{error}</div>}
 
-      {showSuccess && (
-        <div style={styles.successMessage}>Settings saved successfully!</div>
-      )}
-
-      {showError && (
-        <div style={styles.errorMessage}>
-          Failed to save settings. Please try again.
-        </div>
-      )}
+      {success && <div style={styles.successMessage}>{success}</div>}
 
       <div style={styles.container}>
         <div style={styles.sidebar}>
@@ -410,7 +406,7 @@ const ChatBotCustomization = () => {
               <div style={styles.chatBody}>
                 {/* Custom Messages */}
                 <div>
-                  {customMessages.map((message, index) => (
+                  {localSettings.customMessages.map((message, index) => (
                     <div key={index} style={styles.customMessage}>
                       <div style={styles.messageText}>{message}</div>
                     </div>
@@ -424,7 +420,7 @@ const ChatBotCustomization = () => {
                     <div style={styles.formLabel}>Your name</div>
                     <input
                       type="text"
-                      value={introForm.name}
+                      value={localSettings.introForm.name}
                       style={styles.formInput}
                       readOnly
                     />
@@ -433,7 +429,7 @@ const ChatBotCustomization = () => {
                     <div style={styles.formLabel}>Your Phone</div>
                     <input
                       type="text"
-                      value={introForm.phone}
+                      value={localSettings.introForm.phone}
                       style={styles.formInput}
                       readOnly
                     />
@@ -442,7 +438,7 @@ const ChatBotCustomization = () => {
                     <div style={styles.formLabel}>Your Email</div>
                     <input
                       type="text"
-                      value={introForm.email}
+                      value={localSettings.introForm.email}
                       style={styles.formInput}
                       readOnly
                     />
@@ -469,7 +465,9 @@ const ChatBotCustomization = () => {
               <div style={styles.welcomeMessageContainer}>
                 <div style={styles.chatAvatar}>H</div>
                 <div style={{ marginLeft: "10px", flex: 1 }}>
-                  <div style={styles.welcomeMessageText}>{welcomeMessage}</div>
+                  <div style={styles.welcomeMessageText}>
+                    {localSettings.welcomeMessage}
+                  </div>
                 </div>
                 <div style={styles.welcomeMessageDate}>
                   <X size={16} />
@@ -489,38 +487,42 @@ const ChatBotCustomization = () => {
                   style={{
                     ...styles.colorCircle,
                     backgroundColor: "#FFFFFF",
-                    ...(headerColor === "#FFFFFF"
+                    ...(localSettings.headerColor === "#FFFFFF"
                       ? styles.colorCircleSelected
                       : {}),
                   }}
-                  onClick={() => handleHeaderColorChange("#FFFFFF")}
+                  onClick={() => handleColorChange("headerColor", "#FFFFFF")}
                 ></div>
                 <div
                   style={{
                     ...styles.colorCircle,
                     backgroundColor: "#000000",
-                    ...(headerColor === "#000000"
+                    ...(localSettings.headerColor === "#000000"
                       ? styles.colorCircleSelected
                       : {}),
                   }}
-                  onClick={() => handleHeaderColorChange("#000000")}
+                  onClick={() => handleColorChange("headerColor", "#000000")}
                 ></div>
                 <div
                   style={{
                     ...styles.colorCircle,
                     backgroundColor: "#33475B",
-                    ...(headerColor === "#33475B"
+                    ...(localSettings.headerColor === "#33475B"
                       ? styles.colorCircleSelected
                       : {}),
                   }}
-                  onClick={() => handleHeaderColorChange("#33475B")}
+                  onClick={() => handleColorChange("headerColor", "#33475B")}
                 ></div>
               </div>
               <input
                 type="text"
-                value={headerColorHex}
-                onChange={(e) => setHeaderColorHex(e.target.value)}
-                onBlur={() => handleHeaderColorChange(headerColorHex)}
+                value={localSettings.headerColor}
+                onChange={(e) =>
+                  handleColorChange("headerColor", e.target.value)
+                }
+                onBlur={() =>
+                  handleColorChange("headerColor", localSettings.headerColor)
+                }
                 style={styles.colorInput}
               />
             </div>
@@ -533,38 +535,51 @@ const ChatBotCustomization = () => {
                   style={{
                     ...styles.colorCircle,
                     backgroundColor: "#FFFFFF",
-                    ...(backgroundColor === "#FFFFFF"
+                    ...(localSettings.backgroundColor === "#FFFFFF"
                       ? styles.colorCircleSelected
                       : {}),
                   }}
-                  onClick={() => handleBackgroundColorChange("#FFFFFF")}
+                  onClick={() =>
+                    handleColorChange("backgroundColor", "#FFFFFF")
+                  }
                 ></div>
                 <div
                   style={{
                     ...styles.colorCircle,
                     backgroundColor: "#000000",
-                    ...(backgroundColor === "#000000"
+                    ...(localSettings.backgroundColor === "#000000"
                       ? styles.colorCircleSelected
                       : {}),
                   }}
-                  onClick={() => handleBackgroundColorChange("#000000")}
+                  onClick={() =>
+                    handleColorChange("backgroundColor", "#000000")
+                  }
                 ></div>
                 <div
                   style={{
                     ...styles.colorCircle,
                     backgroundColor: "#EEEEEE",
-                    ...(backgroundColor === "#EEEEEE"
+                    ...(localSettings.backgroundColor === "#EEEEEE"
                       ? styles.colorCircleSelected
                       : {}),
                   }}
-                  onClick={() => handleBackgroundColorChange("#EEEEEE")}
+                  onClick={() =>
+                    handleColorChange("backgroundColor", "#EEEEEE")
+                  }
                 ></div>
               </div>
               <input
                 type="text"
-                value={backgroundColorHex}
-                onChange={(e) => setBackgroundColorHex(e.target.value)}
-                onBlur={() => handleBackgroundColorChange(backgroundColorHex)}
+                value={localSettings.backgroundColor}
+                onChange={(e) =>
+                  handleColorChange("backgroundColor", e.target.value)
+                }
+                onBlur={() =>
+                  handleColorChange(
+                    "backgroundColor",
+                    localSettings.backgroundColor
+                  )
+                }
                 style={styles.colorInput}
               />
             </div>
@@ -572,12 +587,12 @@ const ChatBotCustomization = () => {
             {/* Custom Messages */}
             <div style={styles.optionSection}>
               <h3 style={styles.sectionTitle}>Customize Message</h3>
-              {customMessages.map((message, index) => (
+              {localSettings.customMessages.map((message, index) => (
                 <div key={index} style={styles.customMessage}>
                   <div style={styles.messageText}>{message}</div>
                   <button
                     style={styles.editButton}
-                    onClick={() => handleEditMessage(index)}
+                    onClick={() => handleCustomMessageChange(index, "")}
                   >
                     <Edit2 size={16} />
                   </button>
@@ -585,74 +600,42 @@ const ChatBotCustomization = () => {
               ))}
 
               {isEditing &&
-                editingMessage !== null &&
-                editingMessage !== "welcome" && (
-                  <div style={{ marginTop: "10px" }}>
-                    <input
-                      type="text"
-                      value={tempMessage}
-                      onChange={(e) => setTempMessage(e.target.value)}
-                      style={{ ...styles.formInput, marginBottom: "10px" }}
-                    />
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        gap: "10px",
-                      }}
+                localSettings.customMessages.map((message, index) => (
+                  <div key={index} style={styles.customMessage}>
+                    <div style={styles.messageText}>{message}</div>
+                    <button
+                      style={styles.editButton}
+                      onClick={() => handleCustomMessageChange(index, "")}
                     >
-                      <button
-                        onClick={() => {
-                          setIsEditing(false);
-                          setEditingMessage(null);
-                        }}
-                        style={{
-                          padding: "8px 15px",
-                          borderRadius: "4px",
-                          border: "1px solid #ddd",
-                          background: "white",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={handleUpdateMessage}
-                        style={{
-                          padding: "8px 15px",
-                          borderRadius: "4px",
-                          backgroundColor: "#1e4d7b",
-                          color: "white",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Save
-                      </button>
-                    </div>
+                      <Edit2 size={16} />
+                    </button>
                   </div>
-                )}
+                ))}
             </div>
 
             {/* Welcome Message */}
             <div style={styles.optionSection}>
               <h3 style={styles.sectionTitle}>Welcome Message</h3>
               <div style={styles.customMessage}>
-                <div style={styles.messageText}>{welcomeMessage}</div>
+                <div style={styles.messageText}>
+                  {localSettings.welcomeMessage}
+                </div>
                 <button
                   style={styles.editButton}
-                  onClick={handleEditWelcomeMessage}
+                  onClick={() => handleMessageChange("welcomeMessage", "")}
                 >
                   <Edit2 size={16} />
                 </button>
               </div>
 
-              {isEditing && editingMessage === "welcome" && (
+              {isEditing && localSettings.welcomeMessage !== "" && (
                 <div style={{ marginTop: "10px" }}>
                   <input
                     type="text"
-                    value={tempMessage}
-                    onChange={(e) => setTempMessage(e.target.value)}
+                    value={localSettings.welcomeMessage}
+                    onChange={(e) =>
+                      handleMessageChange("welcomeMessage", e.target.value)
+                    }
                     style={{ ...styles.formInput, marginBottom: "10px" }}
                   />
                   <div
@@ -665,7 +648,7 @@ const ChatBotCustomization = () => {
                     <button
                       onClick={() => {
                         setIsEditing(false);
-                        setEditingMessage(null);
+                        handleMessageChange("welcomeMessage", "");
                       }}
                       style={{
                         padding: "8px 15px",
@@ -678,7 +661,7 @@ const ChatBotCustomization = () => {
                       Cancel
                     </button>
                     <button
-                      onClick={handleUpdateWelcomeMessage}
+                      onClick={handleSave}
                       style={{
                         padding: "8px 15px",
                         borderRadius: "4px",
@@ -702,9 +685,12 @@ const ChatBotCustomization = () => {
                 <label style={styles.formLabel}>Name Field Label</label>
                 <input
                   type="text"
-                  value={introForm.name}
+                  value={localSettings.introForm.name}
                   onChange={(e) =>
-                    updateSettings({ ...introForm, name: e.target.value })
+                    handleMessageChange("introForm", {
+                      ...localSettings.introForm,
+                      name: e.target.value,
+                    })
                   }
                   style={styles.formInput}
                   placeholder="Enter name field label"
@@ -714,9 +700,12 @@ const ChatBotCustomization = () => {
                 <label style={styles.formLabel}>Phone Field Label</label>
                 <input
                   type="text"
-                  value={introForm.phone}
+                  value={localSettings.introForm.phone}
                   onChange={(e) =>
-                    updateSettings({ ...introForm, phone: e.target.value })
+                    handleMessageChange("introForm", {
+                      ...localSettings.introForm,
+                      phone: e.target.value,
+                    })
                   }
                   style={styles.formInput}
                   placeholder="Enter phone field label"
@@ -726,9 +715,12 @@ const ChatBotCustomization = () => {
                 <label style={styles.formLabel}>Email Field Label</label>
                 <input
                   type="text"
-                  value={introForm.email}
+                  value={localSettings.introForm.email}
                   onChange={(e) =>
-                    updateSettings({ ...introForm, email: e.target.value })
+                    handleMessageChange("introForm", {
+                      ...localSettings.introForm,
+                      email: e.target.value,
+                    })
                   }
                   style={styles.formInput}
                   placeholder="Enter email field label"
@@ -742,14 +734,11 @@ const ChatBotCustomization = () => {
               <div style={styles.timerContainer}>
                 <input
                   type="text"
-                  value={missedChatTimer.hours}
+                  value={localSettings.missedChatTimer.hours}
                   onChange={(e) =>
-                    updateSettings({
-                      ...settings,
-                      missedChatTimer: {
-                        ...missedChatTimer,
-                        hours: e.target.value,
-                      },
+                    handleMessageChange("missedChatTimer", {
+                      ...localSettings.missedChatTimer,
+                      hours: e.target.value,
                     })
                   }
                   style={styles.timerInput}
@@ -758,14 +747,11 @@ const ChatBotCustomization = () => {
                 <span style={styles.timerSeparator}>:</span>
                 <input
                   type="text"
-                  value={missedChatTimer.minutes}
+                  value={localSettings.missedChatTimer.minutes}
                   onChange={(e) =>
-                    updateSettings({
-                      ...settings,
-                      missedChatTimer: {
-                        ...missedChatTimer,
-                        minutes: e.target.value,
-                      },
+                    handleMessageChange("missedChatTimer", {
+                      ...localSettings.missedChatTimer,
+                      minutes: e.target.value,
                     })
                   }
                   style={styles.timerInput}
@@ -774,14 +760,11 @@ const ChatBotCustomization = () => {
                 <span style={styles.timerSeparator}>:</span>
                 <input
                   type="text"
-                  value={missedChatTimer.seconds}
+                  value={localSettings.missedChatTimer.seconds}
                   onChange={(e) =>
-                    updateSettings({
-                      ...settings,
-                      missedChatTimer: {
-                        ...missedChatTimer,
-                        seconds: e.target.value,
-                      },
+                    handleMessageChange("missedChatTimer", {
+                      ...localSettings.missedChatTimer,
+                      seconds: e.target.value,
                     })
                   }
                   style={styles.timerInput}
@@ -792,7 +775,7 @@ const ChatBotCustomization = () => {
 
             {/* Save Button */}
             <div style={styles.saveButtonContainer}>
-              <button style={styles.saveButton} onClick={handleSaveSettings}>
+              <button style={styles.saveButton} onClick={handleSave}>
                 Save Settings
               </button>
             </div>
