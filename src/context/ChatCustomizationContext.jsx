@@ -42,6 +42,30 @@ export const ChatCustomizationProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Fetch settings from backend on initialization
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        setIsLoading(true);
+        const savedSettings = await getChatSettings();
+        if (savedSettings) {
+          setSettings(savedSettings);
+          localStorage.setItem(
+            "chatbotSettings",
+            JSON.stringify(savedSettings)
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching settings from backend:", error);
+        // Keep using local settings if backend fetch fails
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
   // Memoized update function to prevent unnecessary re-renders
   const updateSettings = useCallback((newSettings) => {
     setIsLoading(true);

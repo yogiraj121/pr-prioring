@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://yogiraj-ticket.onrender.com/api";
+const API_URL = "http://localhost:5000/api";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -231,22 +231,22 @@ export const analyticsService = {
   getDetailedAnalytics: () => api.get("/analytics/detailed"),
 };
 
-export const saveChatSettings = async (settings) => {
-  try {
-    const response = await api.post("/chatbot/settings", settings);
-    return response.data;
-  } catch (error) {
-    console.error("Error saving chat settings:", error);
-    throw error;
-  }
-};
-
 export const getChatSettings = async () => {
   try {
     const response = await api.get("/chatbot/settings");
     return response.data;
   } catch (error) {
-    console.error("Error getting chat settings:", error);
+    console.error("Error fetching chat settings:", error);
+    throw error;
+  }
+};
+
+export const saveChatSettings = async (settings) => {
+  try {
+    const response = await api.put("/chatbot/settings", settings);
+    return response.data;
+  } catch (error) {
+    console.error("Error saving chat settings:", error);
     throw error;
   }
 };

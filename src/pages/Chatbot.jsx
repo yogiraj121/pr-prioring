@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useChatCustomization } from "../context/ChatCustomizationContext";
 import { MessageSquare, Send } from "lucide-react";
-import { ticketService } from "../services/api";
+import { ticketService, getChatSettings } from "../services/api";
 import styles from "./Chatbot.module.css";
 import { toast } from "react-hot-toast";
 import api from "../services/api";
@@ -9,7 +9,7 @@ import eclipse from "../../public/images/Ellipse 5.png";
 import chatIcon from "../../public/images/chat.png";
 
 export default function Chatbot() {
-  const { settings } = useChatCustomization();
+  const { settings, updateSettings } = useChatCustomization();
   const [localSettings, setLocalSettings] = useState(settings);
   const [isOpen, setIsOpen] = useState(() => {
     const saved = localStorage.getItem("chatIsOpen");
@@ -40,6 +40,28 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const messagesContainerRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        setIsLoading(true);
+        const savedSettings = await getChatSettings();
+        if (savedSettings) {
+          updateSettings(savedSettings);
+          toast.success("Chat settings loaded successfully");
+        }
+      } catch (error) {
+        console.error("Error fetching chat settings:", error);
+        setError("Failed to load chat settings");
+        toast.error("Failed to load chat settings");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, [updateSettings]);
 
   useEffect(() => {
     if (!ticketId) return;

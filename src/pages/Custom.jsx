@@ -5,16 +5,18 @@ import { Send, X, Edit2 } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 const ChatBotCustomization = () => {
-  const { settings, updateSettings, isLoading } = useChatCustomization();
+  const { settings, updateSettings } = useChatCustomization();
   const [localSettings, setLocalSettings] = useState(settings);
   const [isEditing, setIsEditing] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch settings from backend when component mounts
   useEffect(() => {
     const fetchSettings = async () => {
       try {
+        setIsLoading(true);
         const savedSettings = await getChatSettings();
         if (savedSettings) {
           setLocalSettings(savedSettings);
@@ -23,6 +25,8 @@ const ChatBotCustomization = () => {
       } catch (error) {
         console.error("Error fetching settings:", error);
         setError("Failed to load settings");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -80,6 +84,7 @@ const ChatBotCustomization = () => {
   const handleSave = async () => {
     try {
       setIsEditing(false);
+      setIsLoading(true);
       await saveChatSettings(localSettings);
       updateSettings(localSettings);
       setSuccess("Settings saved successfully!");
@@ -88,11 +93,14 @@ const ChatBotCustomization = () => {
       console.error("Error saving settings:", error);
       setError("Failed to save settings");
       setTimeout(() => setError(""), 3000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleReset = async () => {
     try {
+      setIsLoading(true);
       const defaultSettings = {
         headerColor: "#33475B",
         backgroundColor: "#FFFFFF",
@@ -110,9 +118,8 @@ const ChatBotCustomization = () => {
           seconds: "00",
         },
       };
-
-      setLocalSettings(defaultSettings);
       await saveChatSettings(defaultSettings);
+      setLocalSettings(defaultSettings);
       updateSettings(defaultSettings);
       setSuccess("Settings reset successfully!");
       setTimeout(() => setSuccess(""), 3000);
@@ -120,6 +127,8 @@ const ChatBotCustomization = () => {
       console.error("Error resetting settings:", error);
       setError("Failed to reset settings");
       setTimeout(() => setError(""), 3000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -355,14 +364,15 @@ const ChatBotCustomization = () => {
     },
     successMessage: {
       position: "absolute",
-      top: "10px",
-      right: "10px",
+      top: "15px",
+      right: "15px",
       color: "#4caf50",
       marginRight: "20px",
       alignSelf: "center",
       backgroundColor: "#ffff",
       padding: "10px",
       borderRadius: "5px",
+      fontSize: "20px",
     },
     errorMessage: {
       position: "absolute",
