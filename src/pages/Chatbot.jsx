@@ -369,7 +369,13 @@ export default function Chatbot() {
               ),
             }}
           >
-            <h3>
+            <h3
+              style={{
+                color: getContrastingTextColor(
+                  settings?.headerColor || "#1a365d"
+                ),
+              }}
+            >
               <span
                 style={{
                   borderRadius: "50%",
