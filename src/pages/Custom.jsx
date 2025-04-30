@@ -5,7 +5,7 @@ import { Send, X, Edit2 } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 const ChatBotCustomization = () => {
-  const { settings, updateSettings, isLoading, error } = useChatCustomization();
+  const { settings, updateSettings, isLoading } = useChatCustomization();
   const [localSettings, setLocalSettings] = useState(settings);
   const [isEditing, setIsEditing] = useState(false);
   const [success, setSuccess] = useState("");
