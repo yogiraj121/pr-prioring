@@ -1,16 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer,} from "recharts";
 import Sidebar from "./Sidebar";
 import { ticketService, userService } from "../services/api";
-import "./Analytics.css";
+import "../styles/Analytics.css";
 
 export default function CustomerAnalyticsDashboard() {
   const [period, setPeriod] = useState("10 weeks");
@@ -35,7 +27,6 @@ export default function CustomerAnalyticsDashboard() {
     totalChats: 122,
   });
 
-  // Fetch user role
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
@@ -48,28 +39,22 @@ export default function CustomerAnalyticsDashboard() {
     fetchUserRole();
   }, []);
 
-  // Fetch analytics data
   useEffect(() => {
     const fetchAnalyticsData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        // Get all tickets
         const response = await ticketService.getAllTickets();
         const tickets = response.data.tickets;
 
-        // Filter tickets based on user role
         const filteredTickets = tickets;
 
-        // Calculate total tickets and resolved count
         const totalTickets = filteredTickets.length;
         const resolvedTickets = filteredTickets.filter(
           (t) => t.status === "resolved"
         ).length;
 
-        // Calculate weekly missed chats (unresolved tickets)
-        // Group tickets by week
         const weeklyData = {};
         const now = new Date();
 
@@ -80,7 +65,6 @@ export default function CustomerAnalyticsDashboard() {
           );
 
           if (weekDiff < 10) {
-            // Only consider last 10 weeks
             const weekKey = `Week ${10 - weekDiff}`;
             if (!weeklyData[weekKey]) {
               weeklyData[weekKey] = {
@@ -95,7 +79,6 @@ export default function CustomerAnalyticsDashboard() {
           }
         });
 
-        // Create missed chats data array
         const missedChats = Array.from({ length: 10 }, (_, i) => {
           const weekKey = `Week ${i + 1}`;
           return {
@@ -104,7 +87,6 @@ export default function CustomerAnalyticsDashboard() {
           };
         });
 
-        // Calculate average reply time
         let totalReplyTime = 0;
         let messageCount = 0;
 
@@ -126,7 +108,6 @@ export default function CustomerAnalyticsDashboard() {
         const averageReplyTime =
           messageCount > 0 ? Math.round(totalReplyTime / messageCount) : 0;
 
-        // Calculate resolved percentage
         const resolvedPercentage =
           totalTickets > 0
             ? Math.round((resolvedTickets / totalTickets) * 100)

@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Footer.module.css";
+import styles from "./styles/Footer.module.css";
 import logo from "../../../public/images/logo.png";
 import social from "../../../public/images/socialIcons.png";
 

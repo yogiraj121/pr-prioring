@@ -2,6 +2,7 @@
   display: flex;
   min-height: 100vh;
   background-color: #f8f9fa;
+  width: 100%;
 }
 
 .sidebar {
@@ -9,39 +10,10 @@
   background-color: #fff;
 }
 
-.sidebarItem {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.sidebarItemActive {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  background-color: #f3f4f6;
-}
-
-.sidebarItemIcon {
-  color: #6b7280;
-}
-
-.activeIcon {
-  color: #374151;
-}
-
-.blueIcon {
-  color: #2563eb;
-}
-
 .mainContent {
   flex: 1;
   margin-left: 85px;
-  padding: 24px;
+  
 }
 
 .contentWrapper {

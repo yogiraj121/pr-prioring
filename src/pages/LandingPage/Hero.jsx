@@ -1,4 +1,4 @@
-import styles from "./Hero.module.css";
+import styles from "./styles/Hero.module.css";
 import { Link } from "react-router-dom";
 import { IoPlayCircleOutline } from "react-icons/io5";
 

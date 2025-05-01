@@ -9,7 +9,7 @@ import Hero2 from "./LandingPage/Hero2";
 import Payment from "./LandingPage/Payment";
 import Footer from "./LandingPage/Footer";
 import eclipse from "../../public/images/Ellipse 5.png";
-import "./Landin.css";
+import "../styles/Landin.css";
 // Add styles for chat widget
 
 // Add landing page styles

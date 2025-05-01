@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Hero2.module.css";
+import styles from "./styles/Hero2.module.css";
 import hero2 from "../../../public/images/hero2.png";
 import hero2Social from "../../../public/images/hero2Social.png";
 

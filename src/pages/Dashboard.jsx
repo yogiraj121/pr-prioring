@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { ticketService, userService } from "../services/api";
 import LoadingSkeleton from "../components/LoadingSkeleton";
-import "./Dashboard.css";
+import "../styles/Dashboard.css";
 import { toast } from "react-hot-toast";
 import { getAvatarUrl } from "../utils/avatarUtils";
 

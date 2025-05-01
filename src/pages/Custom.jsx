@@ -3,6 +3,9 @@ import { useChatCustomization } from "../context/ChatCustomizationContext";
 import { saveChatSettings, getChatSettings } from "../services/api";
 import { Send, X, Edit2 } from "lucide-react";
 import Sidebar from "./Sidebar";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../styles/Custom.css";
 
 const ChatBotCustomization = () => {
   const { settings, updateSettings } = useChatCustomization();
@@ -65,21 +68,14 @@ const ChatBotCustomization = () => {
     });
   };
 
-
-
-  
-
   const handleCustomMessageEdit = (index) => {
     setEditingMessageIndex(index);
   };
-
- 
 
   const handleWelcomeMessageEdit = () => {
     setEditingWelcomeMessage(true);
   };
 
-  
   const handleSave = async () => {
     try {
       setIsEditing(false);
@@ -90,658 +86,386 @@ const ChatBotCustomization = () => {
       };
       await saveChatSettings(settingsToSave);
       updateSettings(settingsToSave);
-      setSuccess("Settings saved successfully!");
+      toast.success("Settings saved successfully!");
       setTimeout(() => setSuccess(""), 3000);
     } catch (error) {
       console.error("Error saving settings:", error);
-      setError("Failed to save settings");
+      toast.error("Failed to save settings");
       setTimeout(() => setError(""), 3000);
     } finally {
       setIsLoading(false);
     }
   };
 
- 
-
-  // Styles
-  const styles = {
-    container: {
-      display: "flex",
-      height: "100vh",
-      fontFamily: "Arial, sans-serif",
-      overflowY: "auto",
-    },
-    sidebar: {
-      width: "85px",
-    },
-    activeIcon: {
-      backgroundColor: "#e9e9e9",
-      color: "#1e88e5",
-    },
-    content: {
-      flex: 1,
-      display: "flex",
-    },
-    chatPreview: {
-      flex: 1,
-      backgroundColor: "#fff",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    customizationPanel: {
-      width: "400px",
-      marginLeft: "20px",
-      marginRight: "80px",
-      backgroundColor: "#fff",
-      marginBottom: "80px",
-    },
-    title: {
-      fontSize: "20px",
-      fontWeight: "bold",
-      marginBottom: "20px",
-      color: "#333",
-    },
-    optionSection: {
-      marginBottom: "10px",
-
-      borderRadius: "8px",
-      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-    },
-    sectionTitle: {
-      fontSize: "16px",
-      fontWeight: "bold",
-      marginBottom: "15px",
-      color: "#333",
-    },
-    colorOptions: {
-      display: "flex",
-      gap: "10px",
-      marginBottom: "10px",
-    },
-    colorCircle: {
-      width: "40px",
-      height: "40px",
-      borderRadius: "50%",
-      cursor: "pointer",
-      border: "2px solid transparent",
-    },
-    colorCircleSelected: {
-      border: "2px solid #333",
-    },
-    colorInput: {
-      padding: "8px",
-      width: "100%",
-      maxWidth: "120px",
-      border: "1px solid #ddd",
-      borderRadius: "4px",
-      marginTop: "10px",
-    },
-    customMessage: {
-      backgroundColor: "#f5f5f5",
-      padding: "5px",
-      borderRadius: "8px",
-      marginBottom: "10px",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    messageText: {
-      flex: 1,
-    },
-    editButton: {
-      border: "none",
-      background: "none",
-      cursor: "pointer",
-      color: "#555",
-      padding: "5px",
-    },
-    formField: {
-      marginBottom: "15px",
-    },
-    formLabel: {
-      display: "block",
-      fontSize: "14px",
-      color: "#666",
-      marginBottom: "5px",
-    },
-    formInput: {
-      width: "95%",
-      padding: "10px",
-      border: "1px solid #ddd",
-      borderRadius: "4px",
-      fontSize: "14px",
-    },
-    button: {
-      backgroundColor: "#1e4d7b",
-      color: "white",
-      border: "none",
-      padding: "12px 20px",
-      borderRadius: "4px",
-      cursor: "pointer",
-      fontSize: "14px",
-      fontWeight: "bold",
-      width: "100%",
-    },
-    chatContainer: {
-      width: "300px",
-      border: "1px solid #ddd",
-      padding: "10px",
-      borderRadius: "8px",
-      overflow: "hidden",
-      backgroundColor: "#fff",
-      boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-    },
-    chatHeader: {
-      backgroundColor: localSettings.headerColor,
-      color: "#fff",
-      padding: "15px",
-      display: "flex",
-      alignItems: "center",
-    },
-    chatBody: {
-      backgroundColor: localSettings.backgroundColor,
-      padding: "15px",
-      height: "450px",
-      display: "flex",
-      flexDirection: "column",
-    },
-    introFormContainer: {
-      backgroundColor: "#fff",
-      padding: "15px",
-      borderRadius: "8px",
-      marginBottom: "15px",
-      width: "80%",
-      height: "100%",
-    },
-    chatInput: {
-      width: "100%",
-      display: "flex",
-      borderTop: "1px solid #ddd",
-      padding: "10px",
-    },
-    chatInputField: {
-      width: "80%",
-      border: "none",
-      outline: "none",
-      padding: "5px",
-      fontSize: "14px",
-      color: "#999",
-    },
-    sendButton: {
-      background: "none",
-      border: "none",
-      color: "#1e88e5",
-      cursor: "pointer",
-    },
-    welcomeMessageContainer: {
-      display: "flex",
-      backgroundColor: "#fff",
-      padding: "12px",
-      borderRadius: "8px",
-      marginBottom: "10px",
-      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-    },
-    welcomeMessageText: {
-      flex: 1,
-      fontSize: "14px",
-    },
-    welcomeMessageDate: {
-      fontSize: "12px",
-      color: "#999",
-    },
-    timerContainer: {
-      display: "flex",
-      gap: "5px",
-      marginBottom: "10px",
-      padding: "5px",
-    },
-    timerInput: {
-      width: "50px",
-      padding: "8px",
-      border: "1px solid #ddd",
-      borderRadius: "4px",
-      textAlign: "center",
-    },
-    timerSeparator: {
-      alignSelf: "center",
-      fontSize: "20px",
-      color: "#999",
-    },
-    saveButton: {
-      backgroundColor: "#1e4d7b",
-      color: "white",
-      border: "none",
-      padding: "10px 20px",
-      borderRadius: "4px",
-      cursor: "pointer",
-      fontSize: "14px",
-      fontWeight: "bold",
-      marginTop: "20px",
-      alignSelf: "flex-end",
-    },
-    saveButtonContainer: {
-      display: "flex",
-      justifyContent: "flex-end",
-    },
-    savedStatus: {
-      color: "#4caf50",
-      marginRight: "10px",
-      alignSelf: "center",
-    },
-    errorStatus: {
-      color: "#f44336",
-      marginRight: "10px",
-      alignSelf: "center",
-    },
-    successMessage: {
-      position: "absolute",
-      top: "15px",
-      right: "15px",
-      color: "#4caf50",
-      marginRight: "20px",
-      alignSelf: "center",
-      backgroundColor: "#ffff",
-      padding: "10px",
-      borderRadius: "5px",
-      fontSize: "20px",
-    },
-    errorMessage: {
-      position: "absolute",
-      top: "10px",
-      right: "10px",
-      color: "#f44336",
-      marginRight: "20px",
-      backgroundColor: "#ffff",
-      padding: "10px",
-      borderRadius: "5px",
-    },
-  };
-
   return (
-    <div className="customization-container">
+    <div className="container">
+      <ToastContainer position="top-right" autoClose={3000} />
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-spinner"></div>
         </div>
       )}
 
-      {error && <div style={styles.errorMessage}>{error}</div>}
+      {error && <div className="errorMessage">{error}</div>}
 
-      {success && <div style={styles.successMessage}>{success}</div>}
+      {success && <div className="successMessage">{success}</div>}
 
-      <div style={styles.container}>
-        <div style={styles.sidebar}>
-          <Sidebar />
-        </div>
+      <div className="sidebar">
+        <Sidebar />
+      </div>
 
-        <div style={styles.content}>
-          <div style={styles.chatPreview}>
-            <div style={styles.chatContainer}>
-              {/* Chat Header */}
-              <div style={styles.chatHeader}>
-                <div style={styles.chatAvatar}>H</div>
-                <div>Hubly</div>
+      <div className="content">
+        <div className="chatPreview">
+          <div className="chatContainer">
+            {/* Chat Header */}
+            <div
+              className="chatHeader"
+              style={{ backgroundColor: localSettings.headerColor }}
+            >
+              <div className="chatAvatar">H</div>
+              <div>Hubly</div>
+            </div>
+
+            {/* Chat Body */}
+            <div
+              className="chatBody"
+              style={{ backgroundColor: localSettings.backgroundColor }}
+            >
+              {/* Custom Messages */}
+              <div className="optionSection">
+                {localSettings.customMessages.map((message, index) => (
+                  <div key={index} className="customMessage">
+                    {editingMessageIndex === index ? (
+                      <input
+                        type="text"
+                        value={message}
+                        onChange={(e) =>
+                          handleCustomMessageChange(index, e.target.value)
+                        }
+                        className="formInput"
+                        onBlur={() => setEditingMessageIndex(null)}
+                      />
+                    ) : (
+                      <>
+                        <div className="messageText">{message}</div>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
 
-              {/* Chat Body */}
-              <div style={styles.chatBody}>
-                {/* Custom Messages */}
-                <div style={styles.optionSection}>
-                  {localSettings.customMessages.map((message, index) => (
-                    <div key={index} style={styles.customMessage}>
-                      {editingMessageIndex === index ? (
-                        <input
-                          type="text"
-                          value={message}
-                          onChange={(e) =>
-                            handleCustomMessageChange(index, e.target.value)
-                          }
-                          style={{ ...styles.formInput, flex: 1 }}
-                          onBlur={() => setEditingMessageIndex(null)}
-                        />
-                      ) : (
-                        <>
-                          <div style={styles.messageText}>{message}</div>
-                        </>
-                      )}
-                    </div>
-                  ))}
+              {/* Intro Form */}
+              <div className="introFormContainer">
+                <div className="sectionTitle">Introduction Yourself</div>
+                <div className="formField">
+                  <div className="formLabel">Your name</div>
+                  <input
+                    type="text"
+                    value={localSettings.introForm.name}
+                    className="formInput"
+                    readOnly
+                  />
                 </div>
-
-                {/* Intro Form */}
-                <div style={styles.introFormContainer}>
-                  <div style={styles.sectionTitle}>Introduction Yourself</div>
-                  <div style={styles.formField}>
-                    <div style={styles.formLabel}>Your name</div>
-                    <input
-                      type="text"
-                      value={localSettings.introForm.name}
-                      style={styles.formInput}
-                      readOnly
-                    />
-                  </div>
-                  <div style={styles.formField}>
-                    <div style={styles.formLabel}>Your Phone</div>
-                    <input
-                      type="text"
-                      value={localSettings.introForm.phone}
-                      style={styles.formInput}
-                      readOnly
-                    />
-                  </div>
-                  <div style={styles.formField}>
-                    <div style={styles.formLabel}>Your Email</div>
-                    <input
-                      type="text"
-                      value={localSettings.introForm.email}
-                      style={styles.formInput}
-                      readOnly
-                    />
-                  </div>
-                  <button style={styles.button}>Thank You!</button>
+                <div className="formField">
+                  <div className="formLabel">Your Phone</div>
+                  <input
+                    type="text"
+                    value={localSettings.introForm.phone}
+                    className="formInput"
+                    readOnly
+                  />
                 </div>
-              </div>
-
-              {/* Chat Input */}
-              <div style={styles.chatInput}>
-                <input
-                  style={styles.chatInputField}
-                  placeholder="Write a message"
-                  readOnly
-                />
-                <button style={styles.sendButton}>
-                  <Send size={18} />
-                </button>
+                <div className="formField">
+                  <div className="formLabel">Your Email</div>
+                  <input
+                    type="text"
+                    value={localSettings.introForm.email}
+                    className="formInput"
+                    readOnly
+                  />
+                </div>
+                <button className="button">Thank You!</button>
               </div>
             </div>
 
-            {/* Welcome Message Preview */}
-            <div style={{ marginTop: "30px", width: "300px" }}>
-              <div style={styles.welcomeMessageContainer}>
-                <div style={styles.chatAvatar}>H</div>
-                <div style={{ marginLeft: "10px", flex: 1 }}>
-                  <div style={styles.welcomeMessageText}>
-                    {localSettings.welcomeMessage}
-                  </div>
-                </div>
-                <div style={styles.welcomeMessageDate}>
-                  <X size={16} />
-                </div>
-              </div>
+            {/* Chat Input */}
+            <div className="chatInput">
+              <input
+                className="chatInputField"
+                placeholder="Write a message"
+                readOnly
+              />
+              <button className="sendButton">
+                <Send size={18} />
+              </button>
             </div>
           </div>
 
-          <div style={styles.customizationPanel}>
-            <h2 style={styles.title}>Chat Bot</h2>
-
-            {/* Header Color */}
-            <div style={styles.optionSection}>
-              <h3 style={styles.sectionTitle}>Header Color</h3>
-              <div style={styles.colorOptions}>
-                <div
-                  style={{
-                    ...styles.colorCircle,
-                    backgroundColor: "#FFFFFF",
-                    ...(localSettings.headerColor === "#FFFFFF"
-                      ? styles.colorCircleSelected
-                      : {}),
-                  }}
-                  onClick={() => handleColorChange("headerColor", "#FFFFFF")}
-                ></div>
-                <div
-                  style={{
-                    ...styles.colorCircle,
-                    backgroundColor: "#000000",
-                    ...(localSettings.headerColor === "#000000"
-                      ? styles.colorCircleSelected
-                      : {}),
-                  }}
-                  onClick={() => handleColorChange("headerColor", "#000000")}
-                ></div>
-                <div
-                  style={{
-                    ...styles.colorCircle,
-                    backgroundColor: "#33475B",
-                    ...(localSettings.headerColor === "#33475B"
-                      ? styles.colorCircleSelected
-                      : {}),
-                  }}
-                  onClick={() => handleColorChange("headerColor", "#33475B")}
-                ></div>
-              </div>
-              <input
-                type="text"
-                value={localSettings.headerColor}
-                onChange={(e) =>
-                  handleColorChange("headerColor", e.target.value)
-                }
-                onBlur={() =>
-                  handleColorChange("headerColor", localSettings.headerColor)
-                }
-                style={styles.colorInput}
-              />
+          {/* Welcome Message Preview */}
+          <div className="welcomeMessageContainer">
+            <div className="chatAvatar">H</div>
+            <div className="welcomeMessageText">
+              {localSettings.welcomeMessage}
             </div>
-
-            {/* Background Color */}
-            <div style={styles.optionSection}>
-              <h3 style={styles.sectionTitle}>Custom Background Color</h3>
-              <div style={styles.colorOptions}>
-                <div
-                  style={{
-                    ...styles.colorCircle,
-                    backgroundColor: "#FFFFFF",
-                    ...(localSettings.backgroundColor === "#FFFFFF"
-                      ? styles.colorCircleSelected
-                      : {}),
-                  }}
-                  onClick={() =>
-                    handleColorChange("backgroundColor", "#FFFFFF")
-                  }
-                ></div>
-                <div
-                  style={{
-                    ...styles.colorCircle,
-                    backgroundColor: "#000000",
-                    ...(localSettings.backgroundColor === "#000000"
-                      ? styles.colorCircleSelected
-                      : {}),
-                  }}
-                  onClick={() =>
-                    handleColorChange("backgroundColor", "#000000")
-                  }
-                ></div>
-                <div
-                  style={{
-                    ...styles.colorCircle,
-                    backgroundColor: "#EEEEEE",
-                    ...(localSettings.backgroundColor === "#EEEEEE"
-                      ? styles.colorCircleSelected
-                      : {}),
-                  }}
-                  onClick={() =>
-                    handleColorChange("backgroundColor", "#EEEEEE")
-                  }
-                ></div>
-              </div>
-              <input
-                type="text"
-                value={localSettings.backgroundColor}
-                onChange={(e) =>
-                  handleColorChange("backgroundColor", e.target.value)
-                }
-                onBlur={() =>
-                  handleColorChange(
-                    "backgroundColor",
-                    localSettings.backgroundColor
-                  )
-                }
-                style={styles.colorInput}
-              />
+            <div className="welcomeMessageDate">
+              <X size={16} />
             </div>
+          </div>
+        </div>
 
-            {/* Custom Messages */}
-            <div style={styles.optionSection}>
-              <h3 style={styles.sectionTitle}>Customize Message</h3>
-              {localSettings.customMessages.map((message, index) => (
-                <div key={index} style={styles.customMessage}>
-                  {editingMessageIndex === index ? (
-                    <input
-                      type="text"
-                      value={message}
-                      onChange={(e) =>
-                        handleCustomMessageChange(index, e.target.value)
-                      }
-                      style={{ ...styles.formInput, flex: 1 }}
-                      onBlur={() => setEditingMessageIndex(null)}
-                    />
-                  ) : (
-                    <>
-                      <div style={styles.messageText}>{message}</div>
-                      <button
-                        style={styles.editButton}
-                        onClick={() => handleCustomMessageEdit(index)}
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                    </>
-                  )}
-                </div>
-              ))}
+        <div className="customizationPanel">
+          <h2 className="title">Chat Bot</h2>
+
+          {/* Header Color */}
+          <div className="optionSection">
+            <h3 className="sectionTitle">Header Color</h3>
+            <div className="colorOptions">
+              <div
+                className={`colorCircle ${
+                  localSettings.headerColor === "#FFFFFF"
+                    ? "colorCircleSelected"
+                    : ""
+                }`}
+                style={{ backgroundColor: "#FFFFFF" }}
+                onClick={() => handleColorChange("headerColor", "#FFFFFF")}
+              ></div>
+              <div
+                className={`colorCircle ${
+                  localSettings.headerColor === "#000000"
+                    ? "colorCircleSelected"
+                    : ""
+                }`}
+                style={{ backgroundColor: "#000000" }}
+                onClick={() => handleColorChange("headerColor", "#000000")}
+              ></div>
+              <div
+                className={`colorCircle ${
+                  localSettings.headerColor === "#33475B"
+                    ? "colorCircleSelected"
+                    : ""
+                }`}
+                style={{ backgroundColor: "#33475B" }}
+                onClick={() => handleColorChange("headerColor", "#33475B")}
+              ></div>
             </div>
+            <input
+              type="text"
+              value={localSettings.headerColor}
+              onChange={(e) => handleColorChange("headerColor", e.target.value)}
+              onBlur={() =>
+                handleColorChange("headerColor", localSettings.headerColor)
+              }
+              className="colorInput"
+            />
+          </div>
 
-            {/* Welcome Message */}
-            <div style={styles.optionSection}>
-              <h3 style={styles.sectionTitle}>Welcome Message</h3>
-              <div style={styles.customMessage}>
-                {editingWelcomeMessage ? (
+          {/* Background Color */}
+          <div className="optionSection">
+            <h3 className="sectionTitle">Custom Background Color</h3>
+            <div className="colorOptions">
+              <div
+                className={`colorCircle ${
+                  localSettings.backgroundColor === "#FFFFFF"
+                    ? "colorCircleSelected"
+                    : ""
+                }`}
+                style={{ backgroundColor: "#FFFFFF" }}
+                onClick={() => handleColorChange("backgroundColor", "#FFFFFF")}
+              ></div>
+              <div
+                className={`colorCircle ${
+                  localSettings.backgroundColor === "#000000"
+                    ? "colorCircleSelected"
+                    : ""
+                }`}
+                style={{ backgroundColor: "#000000" }}
+                onClick={() => handleColorChange("backgroundColor", "#000000")}
+              ></div>
+              <div
+                className={`colorCircle ${
+                  localSettings.backgroundColor === "#EEEEEE"
+                    ? "colorCircleSelected"
+                    : ""
+                }`}
+                style={{ backgroundColor: "#EEEEEE" }}
+                onClick={() => handleColorChange("backgroundColor", "#EEEEEE")}
+              ></div>
+            </div>
+            <input
+              type="text"
+              value={localSettings.backgroundColor}
+              onChange={(e) =>
+                handleColorChange("backgroundColor", e.target.value)
+              }
+              onBlur={() =>
+                handleColorChange(
+                  "backgroundColor",
+                  localSettings.backgroundColor
+                )
+              }
+              className="colorInput"
+            />
+          </div>
+
+          {/* Custom Messages */}
+          <div className="optionSection">
+            <h3 className="sectionTitle">Customize Message</h3>
+            {localSettings.customMessages.map((message, index) => (
+              <div key={index} className="customMessage">
+                {editingMessageIndex === index ? (
                   <input
                     type="text"
-                    value={localSettings.welcomeMessage}
+                    value={message}
                     onChange={(e) =>
-                      handleMessageChange("welcomeMessage", e.target.value)
+                      handleCustomMessageChange(index, e.target.value)
                     }
-                    style={{ ...styles.formInput, flex: 1 }}
-                    onBlur={() => setEditingWelcomeMessage(false)}
+                    className="formInput"
+                    onBlur={() => setEditingMessageIndex(null)}
                   />
                 ) : (
                   <>
-                    <div style={styles.messageText}>
-                      {localSettings.welcomeMessage}
-                    </div>
+                    <div className="messageText">{message}</div>
                     <button
-                      style={styles.editButton}
-                      onClick={handleWelcomeMessageEdit}
+                      className="editButton"
+                      onClick={() => handleCustomMessageEdit(index)}
                     >
                       <Edit2 size={16} />
                     </button>
                   </>
                 )}
               </div>
-            </div>
+            ))}
+          </div>
 
-            {/* Intro Form Fields */}
-            <div style={styles.optionSection}>
-              <h3 style={styles.sectionTitle}>Intro Form Fields</h3>
-              <div style={styles.formField}>
-                <label style={styles.formLabel}>Name Field Label</label>
+          {/* Welcome Message */}
+          <div className="optionSection">
+            <h3 className="sectionTitle">Welcome Message</h3>
+            <div className="customMessage">
+              {editingWelcomeMessage ? (
                 <input
                   type="text"
-                  value={localSettings.introForm.name}
+                  value={localSettings.welcomeMessage}
                   onChange={(e) =>
-                    handleMessageChange("introForm", {
-                      ...localSettings.introForm,
-                      name: e.target.value,
-                    })
+                    handleMessageChange("welcomeMessage", e.target.value)
                   }
-                  style={styles.formInput}
-                  placeholder="Enter name field label"
+                  className="formInput"
+                  onBlur={() => setEditingWelcomeMessage(false)}
                 />
-              </div>
-              <div style={styles.formField}>
-                <label style={styles.formLabel}>Phone Field Label</label>
-                <input
-                  type="text"
-                  value={localSettings.introForm.phone}
-                  onChange={(e) =>
-                    handleMessageChange("introForm", {
-                      ...localSettings.introForm,
-                      phone: e.target.value,
-                    })
-                  }
-                  style={styles.formInput}
-                  placeholder="Enter phone field label"
-                />
-              </div>
-              <div style={styles.formField}>
-                <label style={styles.formLabel}>Email Field Label</label>
-                <input
-                  type="text"
-                  value={localSettings.introForm.email}
-                  onChange={(e) =>
-                    handleMessageChange("introForm", {
-                      ...localSettings.introForm,
-                      email: e.target.value,
-                    })
-                  }
-                  style={styles.formInput}
-                  placeholder="Enter email field label"
-                />
-              </div>
-            </div>
-
-            {/* Timer Settings */}
-            <div style={styles.optionSection}>
-              <h3 style={styles.sectionTitle}>Missed Chat Timer</h3>
-              <div style={styles.timerContainer}>
-                <input
-                  type="text"
-                  value={localSettings.missedChatTimer.hours}
-                  onChange={(e) =>
-                    handleMessageChange("missedChatTimer", {
-                      ...localSettings.missedChatTimer,
-                      hours: e.target.value,
-                    })
-                  }
-                  style={styles.timerInput}
-                  placeholder="HH"
-                />
-                <span style={styles.timerSeparator}>:</span>
-                <input
-                  type="text"
-                  value={localSettings.missedChatTimer.minutes}
-                  onChange={(e) =>
-                    handleMessageChange("missedChatTimer", {
-                      ...localSettings.missedChatTimer,
-                      minutes: e.target.value,
-                    })
-                  }
-                  style={styles.timerInput}
-                  placeholder="MM"
-                />
-                <span style={styles.timerSeparator}>:</span>
-                <input
-                  type="text"
-                  value={localSettings.missedChatTimer.seconds}
-                  onChange={(e) =>
-                    handleMessageChange("missedChatTimer", {
-                      ...localSettings.missedChatTimer,
-                      seconds: e.target.value,
-                    })
-                  }
-                  style={styles.timerInput}
-                  placeholder="SS"
-                />
-              </div>
-            </div>
-
-            {/* Save Button */}
-            <div style={styles.saveButtonContainer}>
-              <button style={styles.saveButton} onClick={handleSave}>
-                Save Settings
-              </button>
+              ) : (
+                <>
+                  <div className="messageText">
+                    {localSettings.welcomeMessage}
+                  </div>
+                  <button
+                    className="editButton"
+                    onClick={handleWelcomeMessageEdit}
+                  >
+                    <Edit2 size={16} />
+                  </button>
+                </>
+              )}
             </div>
           </div>
+
+          {/* Introduction Form */}
+          <div className="optionSection">
+            <h3 className="sectionTitle">Introduction Form</h3>
+            <div className="formField">
+              <label className="formLabel">Your name</label>
+              <input
+                type="text"
+                value={localSettings.introForm.name}
+                onChange={(e) =>
+                  handleMessageChange("introForm", {
+                    ...localSettings.introForm,
+                    name: e.target.value,
+                  })
+                }
+                className="formInput"
+                placeholder="Enter your name"
+              />
+            </div>
+            <div className="formField">
+              <label className="formLabel">Your Phone</label>
+              <input
+                type="text"
+                value={localSettings.introForm.phone}
+                onChange={(e) =>
+                  handleMessageChange("introForm", {
+                    ...localSettings.introForm,
+                    phone: e.target.value,
+                  })
+                }
+                className="formInput"
+                placeholder="+1 (000) 000-0000"
+              />
+            </div>
+            <div className="formField">
+              <label className="formLabel">Your Email</label>
+              <input
+                type="text"
+                value={localSettings.introForm.email}
+                onChange={(e) =>
+                  handleMessageChange("introForm", {
+                    ...localSettings.introForm,
+                    email: e.target.value,
+                  })
+                }
+                className="formInput"
+                placeholder="example@gmail.com"
+              />
+            </div>
+          </div>
+
+          {/* Missed Chat Timer */}
+          <div className="optionSection">
+            <h3 className="sectionTitle">Missed chat timer</h3>
+            <div className="timerContainer">
+              <input
+                type="text"
+                value={localSettings.missedChatTimer.hours}
+                onChange={(e) =>
+                  handleMessageChange("missedChatTimer", {
+                    ...localSettings.missedChatTimer,
+                    hours: e.target.value,
+                  })
+                }
+                className="timerInput"
+                placeholder="00"
+              />
+              <span className="timerSeparator">:</span>
+              <input
+                type="text"
+                value={localSettings.missedChatTimer.minutes}
+                onChange={(e) =>
+                  handleMessageChange("missedChatTimer", {
+                    ...localSettings.missedChatTimer,
+                    minutes: e.target.value,
+                  })
+                }
+                className="timerInput"
+                placeholder="00"
+              />
+              <span className="timerSeparator">:</span>
+              <input
+                type="text"
+                value={localSettings.missedChatTimer.seconds}
+                onChange={(e) =>
+                  handleMessageChange("missedChatTimer", {
+                    ...localSettings.missedChatTimer,
+                    seconds: e.target.value,
+                  })
+                }
+                className="timerInput"
+                placeholder="00"
+              />
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <button className="saveButton" onClick={handleSave}>
+            Save
+          </button>
         </div>
       </div>
     </div>

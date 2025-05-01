@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { authService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
-import "./Login.css";
+import "../styles/Login.css";
 import employee from "../../public/images/employee.png";
 import logo from "../../public/images/logo.png";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +23,7 @@ const LoginComponent = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      setError("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
@@ -32,16 +34,21 @@ const LoginComponent = () => {
     try {
       console.log("Attempting login with:", { email, password });
       const response = await authService.login(email, password);
+      toast.success("Login successful");
       console.log("Login response:", response.data);
       login(response.data.user, response.data.token);
-      
-      const intendedPath = location.state?.from || "/dashboard";
+
+      setTimeout(() => {
+        const intendedPath = location.state?.from || "/dashboard";
       navigate(intendedPath);
-      setSuccessMessage("Login successful");
+      }, 2000);
+      
+      
+    
     } catch (err) {
       console.error("Login error:", err);
       console.error("Error response:", err.response?.data);
-      setError(err.response?.data?.error || "Login failed. Please try again.");
+      toast.error(err.response?.data?.error || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -49,6 +56,7 @@ const LoginComponent = () => {
 
   return (
     <div className="login-container">
+       <ToastContainer position="top-right" autoClose={3000} />
       <div className="login-form">
       <div className="login-form-content">
         <div className="logo">

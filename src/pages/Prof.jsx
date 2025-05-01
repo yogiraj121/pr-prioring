@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useAuth } from "../context/AuthContext";
 import { authService } from "../services/api";
-import "./Prof.css";
-
+import "../styles/Prof.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function SettingsProfileForm() {
   const { user, updateUserContext, logout } = useAuth();
   const [formData, setFormData] = useState({
@@ -123,8 +124,6 @@ export default function SettingsProfileForm() {
         })
       );
 
-      setSuccess("Profile updated successfully");
-
       // Reset password fields
       setFormData((prev) => ({
         ...prev,
@@ -134,16 +133,16 @@ export default function SettingsProfileForm() {
 
       // Show different message if password was changed
       if (formData.newPassword) {
-        setSuccess(
-          "Password updated successfully. You will be logged out in 3 seconds."
-        );
+        toast.success("Profile updated successfully.");
         setTimeout(() => {
           logout();
         }, 3000);
       }
     } catch (err) {
       console.error("Error in handleSubmit:", err);
-      setError(err.message || "Failed to update profile");
+      toast.error(
+        err.message || "Invalid Crendentials . Failed to update profile"
+      );
     } finally {
       setLoading(false);
     }
@@ -151,6 +150,7 @@ export default function SettingsProfileForm() {
 
   return (
     <div className="profile-container">
+      <ToastContainer position="top-right" autoClose={3000} />
       {/* Sidebar */}
       <div className="sidebar-container">
         <Sidebar />

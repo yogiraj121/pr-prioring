@@ -1,4 +1,4 @@
-import styles from "./Companies.module.css";
+import styles from "./styles/Companies.module.css";
 import adobe from "../../../public/images/adobe.png";
 import elastic from "../../../public/images/elastic.png";
 

@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
-import "./Signup.css";
+import "../styles/Signup.css";
 import logo from "../../public/images/logo.png";
 import employee from "../../public/images/employee.png";
-import { toast } from "react-toastify";
+import { toast , ToastContainer} from "react-toastify";
 const SignupComponent = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -49,7 +49,7 @@ const SignupComponent = () => {
     }
 
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
+      toast.error("Password must be at least 6 characters");
       return;
     }
 
@@ -78,18 +78,22 @@ const SignupComponent = () => {
       toast.success("Registration successful");
 
       // Navigate to login page with success message flag and email
-      navigate("/login", {
-        state: {
-          fromRegistration: true,
-          email: formData.email,
-        },
-      });
+      setTimeout(() => {
+        navigate("/login", {
+          state: {
+            fromRegistration: true,
+            email: formData.email,
+          },
+        });
+        
+      }, 2000);
+      
     } catch (err) {
       console.error("Registration error - full error:", err);
       console.error("Error response data:", err.response?.data);
       console.error("Error status:", err.response?.status);
 
-      setError(
+      toast.error(
         err.response?.data?.error || "Registration failed. Please try again."
       );
     } finally {
@@ -99,6 +103,7 @@ const SignupComponent = () => {
 
   return (
     <div className="signup-container">
+       <ToastContainer position="top-right" autoClose={3000} />
       <div className="form-section">
         <div className="form-content">
           <div className="logo">

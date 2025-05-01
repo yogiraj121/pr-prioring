@@ -8,7 +8,7 @@ export default defineConfig({
     
     proxy: {
       "/api": {
-        target: "https://yogiraj-tickets.onrender.com",
+        target: "https://ticket-system-yogiraj.onrender.com",
         changeOrigin: true,
       },
     },

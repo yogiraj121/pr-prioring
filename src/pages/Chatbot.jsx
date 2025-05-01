@@ -2,11 +2,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useChatCustomization } from "../context/ChatCustomizationContext";
 import { MessageSquare, Send } from "lucide-react";
 import { ticketService, getChatSettings } from "../services/api";
-import styles from "./Chatbot.module.css";
+import styles from "../styles/Chatbot.module.css";
 import { toast } from "react-hot-toast";
 import api from "../services/api";
 import eclipse from "../../public/images/Ellipse 5.png";
-import chatIcon from "../../public/images/chat.png";
 
 export default function Chatbot() {
   const { settings, updateSettings } = useChatCustomization();
@@ -70,7 +69,6 @@ export default function Chatbot() {
       try {
         const ticket = await ticketService.getTicket(ticketId);
         if (ticket && ticket.messages) {
-          // Compare messages more thoroughly
           const currentMessageIds = new Set(
             messages.map((msg) => msg._id || msg.timestamp)
           );
@@ -78,7 +76,6 @@ export default function Chatbot() {
             ticket.messages.map((msg) => msg._id || msg.timestamp)
           );
 
-          // Check if there are any new messages
           const hasNewMessages = ticket.messages.some(
             (msg) => !currentMessageIds.has(msg._id || msg.timestamp)
           );
@@ -91,7 +88,7 @@ export default function Chatbot() {
       } catch (err) {
         console.error("Failed to poll messages:", err);
       }
-    }, 2000); // Poll every 2 seconds
+    }, 2000);
 
     return () => clearInterval(pollInterval);
   }, [ticketId, messages]);
@@ -110,7 +107,6 @@ export default function Chatbot() {
   useEffect(() => {
     if (settings) {
       setLocalSettings(settings);
-      // Always update messages when settings change, regardless of ticketId or messages length
       const initialMessages = [];
       if (settings.welcomeMessage) {
         initialMessages.push({
@@ -132,11 +128,9 @@ export default function Chatbot() {
     }
   }, [settings]);
 
-  // Listen for settings updates
   useEffect(() => {
     const handleSettingsUpdate = (event) => {
       const newSettings = event.detail;
-      // Always update messages when settings change
       const initialMessages = [];
       if (newSettings.welcomeMessage) {
         initialMessages.push({
@@ -223,7 +217,6 @@ export default function Chatbot() {
     try {
       let currentTicketId = ticketId;
 
-      // If no ticket exists, create one
       if (!currentTicketId) {
         const newTicket = await ticketService.createTicket({
           firstMessage: followUp,
@@ -232,13 +225,10 @@ export default function Chatbot() {
         currentTicketId = newTicket._id;
         setTicketId(currentTicketId);
 
-        // Show form after first message
         setStep("form");
 
-        // Update local state with the new ticket's messages
         setMessages(newTicket.messages);
       } else {
-        // Add the message to the existing ticket
         const updatedTicket = await ticketService.addMessage(
           currentTicketId,
           "user",
@@ -322,18 +312,14 @@ export default function Chatbot() {
     }, 100);
   };
 
-  // Add this function to determine text color based on background color
   const getContrastingTextColor = (backgroundColor) => {
-    // Convert hex to RGB
     const hex = backgroundColor.replace("#", "");
     const r = parseInt(hex.substr(0, 2), 16);
     const g = parseInt(hex.substr(2, 2), 16);
     const b = parseInt(hex.substr(4, 2), 16);
 
-    // Calculate relative luminance
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
-    // Return black for light backgrounds, white for dark backgrounds
     return luminance > 0.5 ? "#000000" : "#FFFFFF";
   };
 

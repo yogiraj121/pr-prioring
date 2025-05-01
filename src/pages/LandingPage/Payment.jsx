@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Payment.module.css";
+import styles from "./styles/Payment.module.css";
 
 const plans = [
   {

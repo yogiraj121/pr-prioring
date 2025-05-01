@@ -4,9 +4,10 @@ import Sidebar from "./Sidebar";
 import { userService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import LoadingSkeleton from "../components/LoadingSkeleton";
-import "./Team.css";
-import { toast } from "react-hot-toast";
+import "../styles/Team.css";
 import { getAvatarUrl } from "../utils/avatarUtils";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TeamManagement = () => {
   const [teamMembers, setTeamMembers] = useState([]);
@@ -216,10 +217,10 @@ const TeamManagement = () => {
       toast.success(
         editingMember
           ? "Team member updated successfully"
-          : "Team member added successfully"
+          : "New Team Member Created Successfully"
       );
     } catch (err) {
-      console.error("Failed to save team member:", err);
+      toast.error("Failed to save team member:", err);
       setError(
         err.response?.data?.error ||
           "Failed to save team member. Please try again."
@@ -241,11 +242,9 @@ const TeamManagement = () => {
       // Refresh the data immediately after deleting a member
       fetchTeamMembers();
 
-      toast.success(
-        "Member deleted successfully and their tickets reassigned to admin"
-      );
+      toast.success("Member deleted successfully");
     } catch (err) {
-      console.error("Failed to delete team member:", err);
+      toast.error("Failed to delete team member:", err);
       alert("Failed to delete team member. Please try again.");
       handleCloseDeleteConfirmation();
     }
@@ -259,6 +258,7 @@ const TeamManagement = () => {
 
   return (
     <div className="container">
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="sidebar">
         <Sidebar />
       </div>
@@ -332,8 +332,15 @@ const TeamManagement = () => {
                         </td>
                         {user.role === "admin" && (
                           <td className="tableCell actionCell">
-                            {member.role !== "admin" &&
-                              member.createdBy === user._id && (
+                            {/* Allow editing and deleting if:
+                                1. The member is not the current user AND
+                                2. The member was created by the current user OR
+                                3. The member is an admin created by the current user
+                            */}
+                            {member._id !== user._id &&
+                              (member.createdBy === user._id ||
+                                (member.role === "admin" &&
+                                  member.createdBy === user._id)) && (
                                 <>
                                   <button
                                     onClick={() => handleOpenModal(member)}

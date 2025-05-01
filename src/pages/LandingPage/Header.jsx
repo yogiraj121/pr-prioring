@@ -1,4 +1,4 @@
-import styles from "./Header.module.css";
+import styles from "./styles/Header.module.css";
 import Logo from "../../../public/images/logo.png";
 import { useNavigate } from "react-router-dom";
 const Header = () => {
