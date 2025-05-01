@@ -110,60 +110,58 @@ export default function Chatbot() {
   useEffect(() => {
     if (settings) {
       setLocalSettings(settings);
-      if (!messages.length && !ticketId) {
-        const initialMessages = [];
-        if (settings.welcomeMessage) {
+      // Always update messages when settings change, regardless of ticketId or messages length
+      const initialMessages = [];
+      if (settings.welcomeMessage) {
+        initialMessages.push({
+          sender: "bot",
+          message: settings.welcomeMessage,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      if (settings.customMessages?.length > 0) {
+        settings.customMessages.forEach((msg) => {
           initialMessages.push({
             sender: "bot",
-            message: settings.welcomeMessage,
+            message: msg,
             timestamp: new Date().toISOString(),
           });
-        }
-        if (settings.customMessages?.length > 0) {
-          settings.customMessages.forEach((msg) => {
-            initialMessages.push({
-              sender: "bot",
-              message: msg,
-              timestamp: new Date().toISOString(),
-            });
-          });
-        }
-        setMessages(initialMessages);
+        });
       }
+      setMessages(initialMessages);
     }
-  }, [settings, ticketId, messages.length]);
+  }, [settings]);
 
   // Listen for settings updates
   useEffect(() => {
     const handleSettingsUpdate = (event) => {
       const newSettings = event.detail;
-      if (!ticketId && messages.length === 0) {
-        const initialMessages = [];
-        if (newSettings.welcomeMessage) {
+      // Always update messages when settings change
+      const initialMessages = [];
+      if (newSettings.welcomeMessage) {
+        initialMessages.push({
+          sender: "bot",
+          message: newSettings.welcomeMessage,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      if (newSettings.customMessages?.length > 0) {
+        newSettings.customMessages.forEach((msg) => {
           initialMessages.push({
             sender: "bot",
-            message: newSettings.welcomeMessage,
+            message: msg,
             timestamp: new Date().toISOString(),
           });
-        }
-        if (newSettings.customMessages?.length > 0) {
-          newSettings.customMessages.forEach((msg) => {
-            initialMessages.push({
-              sender: "bot",
-              message: msg,
-              timestamp: new Date().toISOString(),
-            });
-          });
-        }
-        setMessages(initialMessages);
+        });
       }
+      setMessages(initialMessages);
     };
 
     window.addEventListener("chatSettingsUpdated", handleSettingsUpdate);
     return () => {
       window.removeEventListener("chatSettingsUpdated", handleSettingsUpdate);
     };
-  }, [ticketId, messages.length]);
+  }, []);
 
   const scrollToBottom = useCallback(() => {
     if (messagesContainerRef.current) {
@@ -198,7 +196,6 @@ export default function Chatbot() {
         timestamp: new Date().toISOString(),
       });
     }
-
     if (currentSettings?.customMessages?.length > 0) {
       currentSettings.customMessages.forEach((msg) => {
         initialMessages.push({
@@ -208,7 +205,6 @@ export default function Chatbot() {
         });
       });
     }
-
     setMessages(initialMessages);
     setStep("initial");
     setFollowUp("");

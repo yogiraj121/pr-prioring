@@ -175,8 +175,6 @@ export default function CustomerAnalyticsDashboard() {
           </div>
         </header>
 
-       
-
         {error && (
           <div className="error-message">
             <p>{error}</p>

@@ -13,7 +13,6 @@ const ChatBotCustomization = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [editingMessageIndex, setEditingMessageIndex] = useState(null);
   const [editingWelcomeMessage, setEditingWelcomeMessage] = useState(false);
-  const [tempMessage, setTempMessage] = useState("");
 
   // Fetch settings from backend when component mounts
   useEffect(() => {
@@ -66,44 +65,21 @@ const ChatBotCustomization = () => {
     });
   };
 
-  const handleAddCustomMessage = () => {
-    setLocalSettings((prev) => ({
-      ...prev,
-      customMessages: [...(prev.customMessages || []), ""],
-    }));
-  };
 
-  const handleRemoveCustomMessage = (index) => {
-    setLocalSettings((prev) => {
-      const newMessages = [...(prev.customMessages || [])];
-      newMessages.splice(index, 1);
-      return {
-        ...prev,
-        customMessages: newMessages,
-      };
-    });
-  };
+
+  
 
   const handleCustomMessageEdit = (index) => {
     setEditingMessageIndex(index);
   };
 
-  const handleCustomMessageSave = (index) => {
-    handleCustomMessageChange(index, tempMessage);
-    setEditingMessageIndex(null);
-    setTempMessage("");
-  };
+ 
 
   const handleWelcomeMessageEdit = () => {
     setEditingWelcomeMessage(true);
   };
 
-  const handleWelcomeMessageSave = () => {
-    handleMessageChange("welcomeMessage", tempMessage);
-    setEditingWelcomeMessage(false);
-    setTempMessage("");
-  };
-
+  
   const handleSave = async () => {
     try {
       setIsEditing(false);
@@ -125,39 +101,7 @@ const ChatBotCustomization = () => {
     }
   };
 
-  const handleReset = async () => {
-    try {
-      setIsLoading(true);
-      const defaultSettings = {
-        headerColor: "#33475B",
-        backgroundColor: "#FFFFFF",
-        welcomeMessage:
-          "👋 Want to chat about Hubly? I'm a chatbot here to help you find your way.",
-        customMessages: ["How can I help you?", "Ask me anything!"],
-        introForm: {
-          name: "Your name",
-          phone: "+1 (000) 000-0000",
-          email: "example@gmail.com",
-        },
-        missedChatTimer: {
-          hours: "12",
-          minutes: "00",
-          seconds: "00",
-        },
-      };
-      await saveChatSettings(defaultSettings);
-      setLocalSettings(defaultSettings);
-      updateSettings(defaultSettings);
-      setSuccess("Settings reset successfully!");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch (error) {
-      console.error("Error resetting settings:", error);
-      setError("Failed to reset settings");
-      setTimeout(() => setError(""), 3000);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+ 
 
   // Styles
   const styles = {
