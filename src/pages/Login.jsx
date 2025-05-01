@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { authService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -14,7 +14,7 @@ const LoginComponent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-
+  
 
 
   const handleSubmit = async (e) => {
@@ -33,19 +33,15 @@ const LoginComponent = () => {
       console.log("Attempting login with:", { email, password });
       const response = await authService.login(email, password);
       console.log("Login response:", response.data);
-
-      // Use the context login function to store token and user data
       login(response.data.user, response.data.token);
-
-      // Redirect to intended destination or dashboard
+      
       const intendedPath = location.state?.from || "/dashboard";
       navigate(intendedPath);
-      toast.success("Login successful");
+      setSuccessMessage("Login successful");
     } catch (err) {
       console.error("Login error:", err);
       console.error("Error response:", err.response?.data);
       setError(err.response?.data?.error || "Login failed. Please try again.");
-      toast.error("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }

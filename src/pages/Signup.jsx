@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import "./Signup.css";
 import logo from "../../public/images/logo.png";
 import employee from "../../public/images/employee.png";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 const SignupComponent = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -75,6 +75,7 @@ const SignupComponent = () => {
       );
 
       console.log("Registration successful:", response.data);
+      toast.success("Registration successful");
 
       // Navigate to login page with success message flag and email
       navigate("/login", {
