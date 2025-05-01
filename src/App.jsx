@@ -15,6 +15,7 @@ import { useAuth } from "./context/AuthContext";
 import { ChatCustomizationProvider } from "./context/ChatCustomizationContext";
 
 
+
 const App = () => {
   const { isAuthenticated } = useAuth();
 

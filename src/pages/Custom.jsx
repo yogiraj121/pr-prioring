@@ -200,8 +200,7 @@ const ChatBotCustomization = () => {
     },
     optionSection: {
       marginBottom: "10px",
-      
-    
+
       borderRadius: "8px",
       boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
     },
@@ -445,7 +444,6 @@ const ChatBotCustomization = () => {
               <div style={styles.chatBody}>
                 {/* Custom Messages */}
                 <div style={styles.optionSection}>
-
                   {localSettings.customMessages.map((message, index) => (
                     <div key={index} style={styles.customMessage}>
                       {editingMessageIndex === index ? (
@@ -461,12 +459,10 @@ const ChatBotCustomization = () => {
                       ) : (
                         <>
                           <div style={styles.messageText}>{message}</div>
-                          
                         </>
                       )}
                     </div>
                   ))}
-                  
                 </div>
 
                 {/* Intro Form */}
