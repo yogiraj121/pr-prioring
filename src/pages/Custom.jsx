@@ -11,6 +11,9 @@ const ChatBotCustomization = () => {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [editingMessageIndex, setEditingMessageIndex] = useState(null);
+  const [editingWelcomeMessage, setEditingWelcomeMessage] = useState(false);
+  const [tempMessage, setTempMessage] = useState("");
 
   // Fetch settings from backend when component mounts
   useEffect(() => {
@@ -54,7 +57,7 @@ const ChatBotCustomization = () => {
 
   const handleCustomMessageChange = (index, value) => {
     setLocalSettings((prev) => {
-      const newMessages = [...prev.customMessages];
+      const newMessages = [...(prev.customMessages || [])];
       newMessages[index] = value;
       return {
         ...prev,
@@ -66,13 +69,13 @@ const ChatBotCustomization = () => {
   const handleAddCustomMessage = () => {
     setLocalSettings((prev) => ({
       ...prev,
-      customMessages: [...prev.customMessages, ""],
+      customMessages: [...(prev.customMessages || []), ""],
     }));
   };
 
   const handleRemoveCustomMessage = (index) => {
     setLocalSettings((prev) => {
-      const newMessages = [...prev.customMessages];
+      const newMessages = [...(prev.customMessages || [])];
       newMessages.splice(index, 1);
       return {
         ...prev,
@@ -81,12 +84,36 @@ const ChatBotCustomization = () => {
     });
   };
 
+  const handleCustomMessageEdit = (index) => {
+    setEditingMessageIndex(index);
+  };
+
+  const handleCustomMessageSave = (index) => {
+    handleCustomMessageChange(index, tempMessage);
+    setEditingMessageIndex(null);
+    setTempMessage("");
+  };
+
+  const handleWelcomeMessageEdit = () => {
+    setEditingWelcomeMessage(true);
+  };
+
+  const handleWelcomeMessageSave = () => {
+    handleMessageChange("welcomeMessage", tempMessage);
+    setEditingWelcomeMessage(false);
+    setTempMessage("");
+  };
+
   const handleSave = async () => {
     try {
       setIsEditing(false);
       setIsLoading(true);
-      await saveChatSettings(localSettings);
-      updateSettings(localSettings);
+      const settingsToSave = {
+        ...localSettings,
+        customMessages: localSettings.customMessages || [],
+      };
+      await saveChatSettings(settingsToSave);
+      updateSettings(settingsToSave);
       setSuccess("Settings saved successfully!");
       setTimeout(() => setSuccess(""), 3000);
     } catch (error) {
@@ -172,9 +199,9 @@ const ChatBotCustomization = () => {
       color: "#333",
     },
     optionSection: {
-      marginBottom: "30px",
-      backgroundColor: "#fff",
-      padding: "20px",
+      marginBottom: "10px",
+      
+    
       borderRadius: "8px",
       boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
     },
@@ -209,7 +236,7 @@ const ChatBotCustomization = () => {
     },
     customMessage: {
       backgroundColor: "#f5f5f5",
-      padding: "12px",
+      padding: "5px",
       borderRadius: "8px",
       marginBottom: "10px",
       display: "flex",
@@ -256,6 +283,7 @@ const ChatBotCustomization = () => {
     chatContainer: {
       width: "300px",
       border: "1px solid #ddd",
+      padding: "10px",
       borderRadius: "8px",
       overflow: "hidden",
       backgroundColor: "#fff",
@@ -323,6 +351,7 @@ const ChatBotCustomization = () => {
       display: "flex",
       gap: "5px",
       marginBottom: "10px",
+      padding: "5px",
     },
     timerInput: {
       width: "50px",
@@ -415,12 +444,29 @@ const ChatBotCustomization = () => {
               {/* Chat Body */}
               <div style={styles.chatBody}>
                 {/* Custom Messages */}
-                <div>
+                <div style={styles.optionSection}>
+
                   {localSettings.customMessages.map((message, index) => (
                     <div key={index} style={styles.customMessage}>
-                      <div style={styles.messageText}>{message}</div>
+                      {editingMessageIndex === index ? (
+                        <input
+                          type="text"
+                          value={message}
+                          onChange={(e) =>
+                            handleCustomMessageChange(index, e.target.value)
+                          }
+                          style={{ ...styles.formInput, flex: 1 }}
+                          onBlur={() => setEditingMessageIndex(null)}
+                        />
+                      ) : (
+                        <>
+                          <div style={styles.messageText}>{message}</div>
+                          
+                        </>
+                      )}
                     </div>
                   ))}
+                  
                 </div>
 
                 {/* Intro Form */}
@@ -599,93 +645,59 @@ const ChatBotCustomization = () => {
               <h3 style={styles.sectionTitle}>Customize Message</h3>
               {localSettings.customMessages.map((message, index) => (
                 <div key={index} style={styles.customMessage}>
-                  <div style={styles.messageText}>{message}</div>
-                  <button
-                    style={styles.editButton}
-                    onClick={() => handleCustomMessageChange(index, "")}
-                  >
-                    <Edit2 size={16} />
-                  </button>
+                  {editingMessageIndex === index ? (
+                    <input
+                      type="text"
+                      value={message}
+                      onChange={(e) =>
+                        handleCustomMessageChange(index, e.target.value)
+                      }
+                      style={{ ...styles.formInput, flex: 1 }}
+                      onBlur={() => setEditingMessageIndex(null)}
+                    />
+                  ) : (
+                    <>
+                      <div style={styles.messageText}>{message}</div>
+                      <button
+                        style={styles.editButton}
+                        onClick={() => handleCustomMessageEdit(index)}
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                    </>
+                  )}
                 </div>
               ))}
-
-              {isEditing &&
-                localSettings.customMessages.map((message, index) => (
-                  <div key={index} style={styles.customMessage}>
-                    <div style={styles.messageText}>{message}</div>
-                    <button
-                      style={styles.editButton}
-                      onClick={() => handleCustomMessageChange(index, "")}
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                  </div>
-                ))}
             </div>
 
             {/* Welcome Message */}
             <div style={styles.optionSection}>
               <h3 style={styles.sectionTitle}>Welcome Message</h3>
               <div style={styles.customMessage}>
-                <div style={styles.messageText}>
-                  {localSettings.welcomeMessage}
-                </div>
-                <button
-                  style={styles.editButton}
-                  onClick={() => handleMessageChange("welcomeMessage", "")}
-                >
-                  <Edit2 size={16} />
-                </button>
-              </div>
-
-              {isEditing && localSettings.welcomeMessage !== "" && (
-                <div style={{ marginTop: "10px" }}>
+                {editingWelcomeMessage ? (
                   <input
                     type="text"
                     value={localSettings.welcomeMessage}
                     onChange={(e) =>
                       handleMessageChange("welcomeMessage", e.target.value)
                     }
-                    style={{ ...styles.formInput, marginBottom: "10px" }}
+                    style={{ ...styles.formInput, flex: 1 }}
+                    onBlur={() => setEditingWelcomeMessage(false)}
                   />
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      gap: "10px",
-                    }}
-                  >
+                ) : (
+                  <>
+                    <div style={styles.messageText}>
+                      {localSettings.welcomeMessage}
+                    </div>
                     <button
-                      onClick={() => {
-                        setIsEditing(false);
-                        handleMessageChange("welcomeMessage", "");
-                      }}
-                      style={{
-                        padding: "8px 15px",
-                        borderRadius: "4px",
-                        border: "1px solid #ddd",
-                        background: "white",
-                        cursor: "pointer",
-                      }}
+                      style={styles.editButton}
+                      onClick={handleWelcomeMessageEdit}
                     >
-                      Cancel
+                      <Edit2 size={16} />
                     </button>
-                    <button
-                      onClick={handleSave}
-                      style={{
-                        padding: "8px 15px",
-                        borderRadius: "4px",
-                        backgroundColor: "#1e4d7b",
-                        color: "white",
-                        border: "none",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-              )}
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Intro Form Fields */}
