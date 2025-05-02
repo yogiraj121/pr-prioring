@@ -56,7 +56,7 @@ Responsive and scalable frontend.
 ## 🔗 Live Demo
 👉 [View Live Demo](https://pr-prioring-97bx.vercel.app/)
 
-####👥 Demo Credentials
+👥 Demo Credentials
 
 🔸 Admin
 
