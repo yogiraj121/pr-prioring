@@ -599,15 +599,16 @@ export default function ContactCenter() {
                         {ticket.assignedTo &&
                           ticket.assignedTo !==
                             userService.getCurrentUserId() && (
-                            <span className="assignedBadge">
-                              Assigned Ticket . You cant access
-                            </span>
-                          )}
-                      </div>
-                      <div className="chatPreview">
-                        {ticket.firstMessage?.substring(0, 30) || "No message"}
+                            <div className="assignedBadge">
+                              Assigned Ticket You cant access
+                            </div>)}
+                        </div>
+                        <div className="chatPreview">
+                        {ticket.firstMessage?.substring(0, 30) || ""}
                         {ticket.firstMessage?.length > 30 ? "..." : ""}
-                      </div>
+                        </div>
+                        
+                      
                     </div>
                   </div>
                 ))}
