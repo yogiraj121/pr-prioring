@@ -49,17 +49,21 @@ Basic CSS styling for a clean UI.
 Responsive and scalable frontend.
 
 
+
 ## 🔗 Live Demo
 👉 [View Live Demo](https://pr-prioring-97bx.vercel.app/)
 
 ####👥 Demo Credentials
 
 🔸 Admin
-Username: www@gmail.com
+
+email: www@gmail.com
 Password: wwwwww
 
+
 🔸 Member
-Username: doctor@g.com
+
+eamil: doctor@g.com
 Password: doctor
 
 
