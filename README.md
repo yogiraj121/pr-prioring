@@ -57,13 +57,13 @@ Responsive and scalable frontend.
 
 🔸 Admin
 
-email: www@gmail.com
+email: www@gmail.com -------
 Password: wwwwww
 
 
 🔸 Member
 
-eamil: doctor@g.com
+eamil: doctor@g.com --------
 Password: doctor
 
 
