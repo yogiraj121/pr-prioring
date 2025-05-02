@@ -48,10 +48,12 @@ Secure API routes.
 Basic CSS styling for a clean UI.
 Responsive and scalable frontend.
 
-## 🔗 Live Demo
 
+## 🔗 Live Demo
 👉 [View Live Demo](https://pr-prioring-97bx.vercel.app/)
+
 ####👥 Demo Credentials
+
 🔸 Admin
 Username: www@gmail.com
 Password: wwwwww
@@ -84,19 +86,6 @@ Frontend
 cd ../client
 npm install
 npm run dev
----
-
-## 🔗 Live Demo
-
-👉 [View Live Demo](https://pr-prioring-97bx.vercel.app/)
-####👥 Demo Credentials
-🔸 Admin
-Username: www@gmail.com
-Password: wwwwww
-
-🔸 Member
-Username: doctor@g.com
-Password: doctor
 
 
 ---
