@@ -17,6 +17,8 @@ import Sidebar from "./Sidebar";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import { ticketService, userService } from "../services/api";
 import "../styles/ChatCenter.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ContactCenter() {
   const { ticketId } = useParams();
@@ -439,6 +441,8 @@ export default function ContactCenter() {
   };
 
   const confirmAssignment = async () => {
+    toast.success("Ticket Assign SuccsesFully")
+
     if (!currentTicket || !selectedMemberId) return;
 
     try {
@@ -506,6 +510,8 @@ export default function ContactCenter() {
 
   return (
     <div className="container">
+      <ToastContainer position="top-right" autoClose={3000} />
+
       {/* Assignment Confirmation Popup */}
       {showAssignConfirm && (
         <div className="confirmPopup">
