@@ -1,6 +1,6 @@
 # 🎫 Ticket System – MERN Stack Project
 
-A **role-based support ticket management system** built with the **MERN stack** (MongoDB, Express.js, React.js, Node.js). It enables **Admins**, **Support Agents**, and **Customers** to manage and track tickets efficiently with a fully integrated **chatbot** and analytics dashboard.
+A **role-based support ticket management system** built with the **MERN stack** (MongoDB, Express.js, React.js, Node.js). It enables **Admins**, **Members**, and **Users** to manage and track tickets efficiently with a fully integrated **chatbot** and analytics dashboard.
 
 
 
@@ -83,7 +83,6 @@ cd pr-prioring
 Backend
 cd server
 npm install
-
 # Start the backend server
 node server.js
 # or
