@@ -35,7 +35,7 @@ npm install
 npm run dev
 
 
-## 🚀 Features Implemented
+#### 🚀 Features Implemented
 🎟 Ticketing System
 Create, view, and update tickets with comment support.
 Role-restricted actions (Admin, Support Agent, Customer).
@@ -75,13 +75,13 @@ Admin: Full access, manage users and tickets.
 Support Agent (Member): View & respond to assigned tickets.
 Customer (User): Submit and track personal tickets.
 
-## 🛠 Additional Features
+#### 🛠 Additional Features
 Toast notifications for actions.
 Secure API routes.
 Basic CSS styling for a clean UI.
 Responsive and scalable frontend.
 
-##👥 Demo Credentials
+####👥 Demo Credentials
 🔸 Admin
 Username: www@gmail.com
 Password: wwwwww
