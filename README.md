@@ -2,6 +2,9 @@
 
 A **role-based support ticket management system** built with the **MERN stack** (MongoDB, Express.js, React.js, Node.js). It enables **Admins**, **Support Agents**, and **Customers** to manage and track tickets efficiently with a fully integrated **chatbot** and analytics dashboard.
 
+
+
+
 #### 🚀 Features Implemented
 🎟 Ticketing System
 Create, view, and update tickets with comment support.
@@ -63,8 +66,10 @@ Password: wwwwww
 
 🔸 Member
 
-eamil: doctor@g.com --------
+email: doctor@g.com --------
 Password: doctor
+
+
 
 
 ## 🛠 Setup Instructions
