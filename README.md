@@ -1,94 +1,108 @@
-🎫 Ticket System – MERN Stack Project
-A role-based support ticket management system built with the MERN stack (MongoDB, Express.js, React.js, Node.js). It allows Admins, Support Agents, and Customers to manage and track tickets efficiently.
+# 🎫 Ticket System – MERN Stack Project
 
+A **role-based support ticket management system** built with the **MERN stack** (MongoDB, Express.js, React.js, Node.js). It enables **Admins**, **Support Agents**, and **Customers** to manage and track tickets efficiently with a fully integrated **chatbot** and analytics dashboard.
 
-Demo-Link : (https://pr-prioring-97bx.vercel.app/)
+---
 
-🛠 Setup Instructions
-1. Clone the Repository
+## 🔗 Live Demo
 
+👉 [View Live Demo](https://pr-prioring-97bx.vercel.app/)
+
+---
+
+## 🛠 Setup Instructions
+
+### 1. Clone the Repository
+```bash
 git clone https://github.com/yogiraj121/pr-prioring.git
-
 cd pr-prioring
 
 
-2.Backend Setup
- 
+Backend
 cd server
-
-npm i
-
-node server.js / npx nodemon / npm run dev
-
-
-3.Frontend Setup
- 
-cd client
-
 npm install
 
+# Start the backend server
+node server.js
+# or
+npx nodemon
+# or
+npm run dev
+
+Frontend
+cd ../client
+npm install
 npm run dev
 
 
-
-
 🚀 Features Implemented
+🎟 Ticketing System
+Create, view, and update tickets with comment support.
 
-Ticketing System: Create, view, update tickets with comments and role-restricted actions.
+Role-restricted actions (Admin, Support Agent, Customer).
 
-Chatbot Integration: Handles user queries, links them to Admins. through the tickets, and allows tracking from the admin side.
+🤖 Chatbot Integration
+Handles user queries and links them to Admin via tickets.
 
-Dashboard Page:- Where Admin can view all tickets. and member can see their specific assign tickets.
+Admins can track chats from the dashboard.
 
-Analytics Page :- where admin or member can track key analytics like missed chats, average response time, and ticket resolution stats and total chats.
+📊 Dashboard Page
+Admins can view and manage all tickets.
 
-Contact Center Page:- Admins assign chats to support agents who can respond through their dashboard and also for chatting.
+Members see only their assigned tickets.
 
-Team Management Page:- Admins can manage team members and edit, delete and create them.
+📈 Analytics Page
+Track stats like:
 
-Chatbot Customisation page:- Where admin or member can customise user interface .
+Missed chats
 
-Profile page:- Where user can see their profile and also update. 
+Average response time
 
+Total tickets & resolved issues
 
--Authentication & Authorization
+📞 Contact Center
+Admins assign chats to support agents.
 
--JWT-based secure authentication.
+Agents respond to chats from their dashboards.
 
-JWT-based Authentication with secure role-based access (Admin, Member , User).
+👥 Team Management
+Admins can add, edit, or remove team members.
 
+🎨 Chatbot Customization
+Interface to customize chatbot UI by Admin or Member.
+
+👤 Profile Page
+View and update personal profile data.
+
+🔐 Authentication & Authorization
+JWT-based secure authentication.
 
 Role-based access control:
 
-Admin: Full access, user/ticket management.
+Admin: Full access, manage users and tickets.
 
-Support Agent: View and chat assigned tickets.
+Support Agent (Member): View & respond to assigned tickets.
 
-Customer: Create personal tickets.
+Customer (User): Submit and track personal tickets.
 
-
-🔧 Additional Features.
-
-Toast notifications.
-
-Basic CSS styling.
+🛠 Additional Features
+Toast notifications for actions.
 
 Secure API routes.
 
+Basic CSS styling for a clean UI.
 
+Responsive and scalable frontend.
 
 👥 Demo Credentials
-You can use the following demo accounts:
-
 🔸 Admin
-
 Username: www@gmail.com
 
 Password: wwwwww
 
-
 🔸 Member
-
 Username: doctor@g.com
 
 Password: doctor
+
+
