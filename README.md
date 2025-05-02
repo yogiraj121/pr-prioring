@@ -2,7 +2,33 @@
 
 A **role-based support ticket management system** built with the **MERN stack** (MongoDB, Express.js, React.js, Node.js). It enables **Admins**, **Support Agents**, and **Customers** to manage and track tickets efficiently with a fully integrated **chatbot** and analytics dashboard.
 
-#### 🚀 Features Implemented
+## 🛠 Setup Instructions
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/yogiraj121/pr-prioring.git
+cd pr-prioring
+
+
+Backend
+cd server
+npm install
+
+# Start the backend server
+node server.js
+# or
+npx nodemon
+# or
+npm run dev
+
+Frontend
+cd ../client
+npm install
+npm run dev
+
+
+
+### 🚀 Features Implemented
 🎟 Ticketing System
 Create, view, and update tickets with comment support.
 Role-restricted actions (Admin, Support Agent, Customer).
@@ -55,30 +81,6 @@ Responsive and scalable frontend.
 👉 [View Live Demo](https://pr-prioring-97bx.vercel.app/)
 
 ---
-
-## 🛠 Setup Instructions
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/yogiraj121/pr-prioring.git
-cd pr-prioring
-
-
-Backend
-cd server
-npm install
-
-# Start the backend server
-node server.js
-# or
-npx nodemon
-# or
-npm run dev
-
-Frontend
-cd ../client
-npm install
-npm run dev
 
 
 ####👥 Demo Credentials
