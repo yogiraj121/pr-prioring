@@ -1,6 +1,7 @@
 🎫 Ticket System – MERN Stack Project
 A role-based support ticket management system built with the MERN stack (MongoDB, Express.js, React.js, Node.js). It allows Admins, Support Agents, and Customers to manage and track tickets efficiently.
 
+
 Demo-Link : (https://pr-prioring-97bx.vercel.app/)
 
 🛠 Setup Instructions
@@ -10,7 +11,8 @@ git clone https://github.com/yogiraj121/pr-prioring.git
 
 cd pr-prioring
 
-2. Backend Setup
+
+2.Backend Setup
  
 cd server
 
@@ -18,13 +20,16 @@ npm i
 
 node server.js / npx nodemon / npm run dev
 
-3. Frontend Setup
+
+3.Frontend Setup
  
 cd client
 
 npm install
 
 npm run dev
+
+
 
 
 🚀 Features Implemented
@@ -45,28 +50,45 @@ Chatbot Customisation page:- Where admin or member can customise user interface 
 
 Profile page:- Where user can see their profile and also update. 
 
+
 -Authentication & Authorization
+
 -JWT-based secure authentication.
+
 JWT-based Authentication with secure role-based access (Admin, Member , User).
 
+
 Role-based access control:
+
 Admin: Full access, user/ticket management.
+
 Support Agent: View and chat assigned tickets.
+
 Customer: Create personal tickets.
 
+
 🔧 Additional Features.
+
 Toast notifications.
+
 Basic CSS styling.
+
 Secure API routes.
+
 
 
 👥 Demo Credentials
 You can use the following demo accounts:
 
 🔸 Admin
-Username: www@www.com
+
+Username: www@gmail.com
+
 Password: wwwwww
 
+
 🔸 Member
+
 Username: doctor@g.com
+
 Password: doctor
